@@ -1,0 +1,135 @@
+body{
+    background: rgba(27, 25, 25, 1);
+    font-family: 'JejuGothic';
+}
+
+h1,h2,h3{
+    font-weight: normal;
+}
+
+.sidebar-livepeer {
+    text-decoration: none !important;
+    color: white;
+}
+
+
+Link {
+    text-decoration: none !important;
+    
+}
+
+
+
+.line{
+    /* position: absolute; */
+    /* width: 1200px;
+    height: 0px; */
+    
+    display: flex;
+    margin: 0 auto;
+    /* align-items: center;
+    justify-content: center; */
+    
+    border: 3px solid #202020;
+    transform: rotate(-180deg);
+}
+
+.sidebar{
+    position: absolute;
+    width: 318px;
+    height: 1024px;
+    color: white;
+    
+    background: #1A1717;
+}
+
+.sidebar-icons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-top: 30px;
+}
+
+.home{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin: 0px 40px;
+}
+
+.messages{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin: 0px 40px;
+}
+
+.bell{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin: 0px 40px;
+}
+
+.huddle{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin: 0px 40px;
+}
+
+.livepeer{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin: 0px 40px;
+}
+
+.home-icon{
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.messages-icon{
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.bell-icon{
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.huddle-icon{
+    width: 55wpx;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.livepeer-icon{
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.search-bar{
+
+    float: right;
+    /* margin-top: -60px;
+    margin-left: 200px; */
+    margin: -40px 20px;
+}
+
+.search-field{
+    width: 250px;
+    height: 49px;
+
+    background: #383838;
+    color: white;
+    border-radius: 191px;
+    border: none;
+}

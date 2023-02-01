@@ -1,0 +1,26 @@
+.searchBar{
+    position: absolute;
+    width: 300px;
+    height: 49px;
+    margin: 35px 1200px;
+    
+    background: #383838;
+    border-radius: 191px;
+    border: none;
+}
+
+.search-icon{
+    position: absolute;
+width: 23.18px;
+height: 23.18px;
+
+}
+
+.line{
+    position: absolute;
+    width: 1024px;
+    height: 0px;
+
+    border: 3px solid #202020;
+    transform: rotate(90deg);
+}
