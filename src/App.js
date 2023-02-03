@@ -14,6 +14,8 @@ import { mainnet, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { useEffect } from 'react';
+import Syndicate from './Components/Syndicate';
+import Huddle from './Components/Huddle';
 
 
 
@@ -46,6 +48,8 @@ export default function App()
          <Route path="/light-house" element={<LightHouse />} />
          <Route path="/login" element={<LoginPage />} />
          <Route path="/home" element={<Home />} />
+         <Route path="/Syndicates" element={<Syndicate />} />
+         <Route path="/Huddle" element={<Huddle />} />
          {/* <Route path="/proposal" element={<Proposal />} />
         
          <Route path="/proposal" element={<Proposal />} /> */}

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import "../Components/LightHouse.css";
 import File from "../images/icons/file2.png";
+import File2 from "../images/icons/file.png";
+import Lock from "../images/icons/lock.png"
+
 import lighthouse from "@lighthouse-web3/sdk";
 import { ethers } from "ethers";
 
@@ -22,7 +25,7 @@ const LightHouse = () => {
   useEffect(() => {
     const fetchData = async () => {
       const uploads = await lighthouse.getUploads(address);
-      // console.log(uploads.data.uploads);
+      console.log(uploads.data.uploads);
       setAllUploads(uploads.data.uploads);
       setLoading(true);
     };
@@ -355,6 +358,90 @@ const LightHouse = () => {
     */
   };
 
+
+
+  //* Apply Access Control
+
+    //* Apply for Access control
+
+
+    const[accessCID , setAccessCID] = useState("");
+    const[addressForAccess , setAddressForAccess] = useState("");
+    const[value , setValue] = useState("");
+  
+
+    const handleAddressForAccess = (event) => {
+      setAddressForAccess(event.target.value);
+    };
+
+
+    const handleCid = (event) => {
+      setAccessCID(event.target.value);
+    };
+
+    const handleValue = (event) => {
+      setValue(event.target.value);
+    };
+  
+
+
+    const applyAccessConditions = async(e) =>{
+      const cid = accessCID;
+  
+      // Conditions to add
+      const conditions = [
+        {
+          id: 1,
+          chain: "Hyperspace",
+          method: "balanceOf",
+          standardContractType: "ERC721",
+          contractAddress: addressForAccess,
+          returnValueTest: { comparator: ">=", value: value },
+          parameters: [":userAddress"],
+      },
+  
+      ];
+  
+      const aggregator = "([1])";
+      const {publicKey, signedMessage} = await encryptionSignature();
+
+      const response = await lighthouse.accessCondition(
+        publicKey,
+        cid,
+        signedMessage,
+        conditions,
+        aggregator
+      );
+
+
+      const url = BaseUrl + response.data.cid;
+      setCID(url);
+     
+
+      toast.success(
+        "Shared Succesfully with :" + " " + response.data.cid,
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        }
+      );
+  
+      console.log(response);
+      
+          // data: {
+          //   cid: "QmZkEMF5y5Pq3n291fG45oyrmX8bwRh319MYvj7V4W4tNh",
+          //   status: "Success"
+          // }
+       
+    }
+  
+
   return (
     <>
       <ToastContainer closeButton={CloseButton} />
@@ -363,10 +450,10 @@ const LightHouse = () => {
         <div>
           {loadingData && (
             <div>
-              <h3 className="heading">
+              <h3 className="heading-storage">
                 Data Remaining: {convertKBtoMB(remainingBalance.dataLimit)}
               </h3>
-              <h3 className="heading">
+              <h3 className="heading-storage">
                 Data Used: {convertKBtoMB(remainingBalance.dataUsed)}
               </h3>
             </div>
@@ -376,24 +463,25 @@ const LightHouse = () => {
 
           {/* Simple File Upload  */}
 
-          <form className="files-upload">
-            <img className="file-icon" src={File} onClick={handleImageClick1} />
-            <input
-              type="file"
-              ref={(input) => setInputRefSimple(input)}
-              onChange={handleSimpleFile}
-              style={{ display: "none" }}
-            />
-            {!simpleFile && (
-              <p className="box-text">Upload files (Simple Upload) </p>
-            )}
-            {simpleFile && (
-              <p className="box-text">{simpleFile.target.files[0].name}</p>
-            )}
-            <a onClick={deploy} className="decrypt-btn">
-              Upload File
-            </a>
-          </form>
+          <div className="upload">
+            <form className="files-upload">
+              <img className="file-icon" src={File} onClick={handleImageClick1} />
+              <input
+                type="file"
+                ref={(input) => setInputRefSimple(input)}
+                onChange={handleSimpleFile}
+                style={{ display: "none" }}
+              />
+              {!simpleFile && (
+                <p className="box-text">Upload files (Simple Upload) </p>
+              )}
+              {simpleFile && (
+                <p className="box-text">{simpleFile.target.files[0].name}</p>
+              )}
+              <a onClick={deploy} className="upload-btn">
+                Upload File
+              </a>
+            </form>
 
           {/* Encrypted File Upload  */}
           <div className="encrypted-files-upload">
@@ -403,18 +491,21 @@ const LightHouse = () => {
               ref={(input) => setInputRefEncrypt(input)}
               onChange={handleEncyptedFile}
               style={{ display: "none" }}
-            />
+              />
             {!encyptFile && (
-              <p className="box-text">Upload files you wana (Encypt)</p>
-            )}
+              <p className="box-text">Upload files you wanna (Encypt)</p>
+              )}
             {encyptFile && (
               <p className="box-text">{encyptFile.target.files[0].name}</p>
-            )}
+              )}
 
-            <a onClick={deployEncrypted} className="decrypt-btn">
+            <a onClick={deployEncrypted} className="upload-btn">
               Upload File
             </a>
           </div>
+              </div>
+
+            {/* decrypt & share buttons */}
 
           <div className="form-btns">
             <h4 className="button-guide">
@@ -422,7 +513,7 @@ const LightHouse = () => {
               CID is necessary for us to securely access and decrypt your file
             </h4>
 
-            <form className="button">
+            <form>
               <a onClick={decrypt} className="decrypt-btn">
                 Decrypt File
               </a>
@@ -444,8 +535,8 @@ const LightHouse = () => {
 
               {error && <p style={{ color: "red" }}>{error}</p>}
 
-              <div>
-                <input
+              <div className="checkbox">
+                <input className="checkbox-txt"
                   type="radio"
                   value="text"
                   checked={selectedOption === "text"}
@@ -453,12 +544,13 @@ const LightHouse = () => {
                 />
                 (FileType) text
                 <input
+                className="checkbox-img"
                   type="radio"
                   value="image/jpeg"
                   checked={selectedOption === "image/jpeg"}
                   onChange={handleOptionChange}
                 />
-                (FileType) Image
+                (FileType) image
               </div>
             </form>
 
@@ -472,7 +564,6 @@ const LightHouse = () => {
                 Share file
               </a>
 
-              <label className="cid-input">
                 <input
                   className="cid-input"
                   type="text"
@@ -481,10 +572,8 @@ const LightHouse = () => {
                   onChange={handleShare}
                   maxLength={46}
                 />
-              </label>
               {errorShare && <p style={{ color: "red" }}>{errorShare}</p>}
 
-              <label className="cid-input">
                 <input
                   className="cid-input"
                   type="text"
@@ -493,7 +582,6 @@ const LightHouse = () => {
                   onChange={handleAddress}
                   maxLength={42}
                 />
-              </label>
               {errorAddress && <p style={{ color: "red" }}>{errorAddress}</p>}
             </form>
           </div>
@@ -514,52 +602,113 @@ const LightHouse = () => {
               </div>
             </div> */}
 
-          <table>
+          {/* <table className="table-box">
             <thead>
-              <tr>
+              <tr className="table-row">
                 <th>FileName</th>
                 <th>FileType</th>
                 <th>Encryption</th>
                 <th>CID</th>
                 <th>Size</th>
-                <th>Address</th>
                 <th>createdAt</th>
               </tr>
             </thead>
             {loading && (
-              <tbody>
+              <tbody className="table-row">
                 {allUploads.map((array, index) => (
-                  <tr key={index}>
+                  <tr key={index} className="table-row">
                     <td>{array.fileName}</td>
-                    <td>{array.mimeType}</td>
-                    {array.encryption === true ? <td>True</td> : <td>False</td>}
+                    <td c>{array.mimeType}</td>
+                    {array.encryption === true ? <td> <img className="table-file" src={File2}/></td> : <td> <img className="table-lock" src={Lock}/> </td>}
                     <td>{array.cid}</td>
                     <td>{convertBytesToKilobytes(array.fileSizeInBytes)}</td>
-                    <td>{array.publicKey}</td>
                     <td>{convertTimestampToDate(array.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>
             )}
-            {/* {loading === false && <p>No items to display.</p>} */}
-          </table>
+          </table> */}
+            {/* <td>{array.publicKey}</td> */}
 
-          {/* <div className="table-row">
-    <div className="table-cell first-cell">
-      <p>fdsafasdasasf</p> 
-    </div>
-    <div className="table-cell">
-      <p>QmZPGvydQh....TmERMc5WJi</p>
-    </div>
-    <div className="table-cell last-cell">
-      <p>0.09 KB</p>
-    </div>
-    <div className="table-cell last-cell">
-      <p>7/11/23</p>
-    </div>
-  </div> */}
+          <div className="table">
+            <table className="styled-table">
+              <thead>
+                  <tr>
+                  <th>FileName</th>
+                  <th>FileType</th>
+                  <th>Encryption</th>
+                  <th>CID</th>
+                  <th>Size</th>
+                  <th>createdAt</th>
+                  </tr>
+              </thead>
+              {loading && (
+                <tbody>
+                {allUploads.map((array, index) => (
+                  <tr key={index} className='active-row'>
+                    <td>{array.fileName}</td>
+                    <td c>{array.mimeType}</td>
+                    {array.encryption === true ? <td> <img className="table-file" src={Lock}/></td> : <td> <img className="table-lock" src={File2}/> </td>}
+                    <td>{array.cid}</td>
+                    <td>{convertBytesToKilobytes(array.fileSizeInBytes)}</td>
+                    <td>{convertTimestampToDate(array.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
 
-          {/* </div> */}
+            )}
+      </table>
+
+          </div>
+
+          <div className="container">
+            <div className="title">Add Access Condition</div>
+            <div className="content">
+            <form action="#">
+                <div className="user-details">
+                    <div className="input-box">
+                        <span className="details">Chain</span>
+                        <input type="text" placeholder="Hyperspace" disabled/>
+                    </div>
+                    <div className="input-box">
+                        <span className="details">Contract Type</span>
+                        <input type="text" placeholder="ERC721" required disabled/>
+                    </div>
+                    <div className="input-box">
+                        <span className="details">Method</span>
+                        <input type="text" placeholder="balanceOf" disabled/>
+                    </div>
+                    <div className="input-box">
+                        <span className="details">Contract Address</span>
+                        <input type="text" onChange={handleAddressForAccess} maxLength={42} placeholder="Contract Address"/>
+                    </div>
+                    <div className="input-box">
+                        <span className="details">Comparator</span>
+                        <input type="text" placeholder=">=" disabled/>
+                    </div>
+                    <div className="input-box">
+                        <span className="details">Value</span>
+                        <input type="text" onChange={handleValue} placeholder="Value" required/>
+                    </div>
+                    <div className="input-box">
+                        <span className="details">Paramter</span>
+                        <input type="text" placeholder=":userAddress" disabled/>
+                    </div>
+                    <div className="input-box">
+                        <span className="details">CID</span>
+                        <input type="text" onChange={handleCid} placeholder="Enter Your Cid Here" maxLength={46} />
+                    </div>
+
+                </div>
+
+                <div className="button">
+                <input className="applyAccessConditions" onClick={applyAccessConditions} value="Create Access Condition"/>
+                </div>
+            </form>
+            </div>
+</div>
+
+         
         </div>
       )}
     </>

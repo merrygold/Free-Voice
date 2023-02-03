@@ -4,6 +4,7 @@ import Messages from "../images/icons/messages.png";
 import Bell from "../images/icons/bell.png";
 import Huddle from "../images/icons/huddle.png";
 import Livepeer from "../images/icons/livepper.png";
+import Shadow from "../images/shadow-512x512.png";
 import Search from "../images/icons/search.png";
 import { Navigate } from 'react-router-dom';
 
@@ -21,19 +22,28 @@ const Navbar = () => {
   const { isConnected, isDisconnected } = useAccount();
   return (
     <div>
-      {isConnected && (
-        <div className="sidebar-icons">
+      {isConnected && (<>
+      
+          <div className="sidebar-icons">
+
+
+          <div className="home">
+            <img className="shadow-icon" src={Shadow} />
+          </div>
+
+
           <div className="home">
             <img className="home-icon" src={Home} />
             <Link to="/Home">
-            <h2 className="sidebar-livepeer"> Home</h2>
+              <h2 className="sidebar-livepeer"> Home</h2>
             </Link>
-            
           </div>
 
           <div className="messages">
             <img className="messages-icon" src={Messages} />
-            <h2 className="sidebar-icon_messages">Messages</h2>
+            <Link to="/Syndicates">
+              <h2 className="sidebar-livepeer">Syndicates</h2>
+            </Link>
           </div>
 
           <div className="bell">
@@ -43,7 +53,9 @@ const Navbar = () => {
 
           <div className="huddle">
             <img className="huddle-icon" src={Huddle} />
-            <h2 className="sidebar-huddle">Huddle</h2>
+            <Link to="/Huddle">
+              <h2 className="sidebar-livepeer">Huddle</h2>
+            </Link>
           </div>
 
           <div className="livepeer">
@@ -57,11 +69,11 @@ const Navbar = () => {
             <Connect />
           </div>
         </div>
+      </>
+      
       )}
 
-      {isDisconnected && (
-        <Navigate to='/login' />
-      )}
+      {isDisconnected && <Navigate to="/login" />}
     </div>
   );
 };
