@@ -1,5 +1,23 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_postId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_commentMessage",
+				"type": "string"
+			}
+		],
+		"name": "addComment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -22,7 +40,7 @@
 			{
 				"indexed": true,
 				"internalType": "uint256",
-				"name": "imageId",
+				"name": "postId",
 				"type": "uint256"
 			},
 			{
@@ -34,6 +52,52 @@
 		],
 		"name": "CommentAdded",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_syndicateName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_syndicateDescription",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_nftName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_nftSymbol",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_syndicateImageHash",
+				"type": "string"
+			}
+		],
+		"name": "createSyndicate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			}
+		],
+		"name": "downvoteMeme",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -94,13 +158,13 @@
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "id",
 				"type": "uint256"
 			},
 			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "address",
 				"name": "_member",
 				"type": "address"
@@ -108,6 +172,19 @@
 		],
 		"name": "EventJoinSyndicate",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_syndicateId",
+				"type": "uint256"
+			}
+		],
+		"name": "joinSyndicate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -121,7 +198,19 @@
 			{
 				"indexed": false,
 				"internalType": "string",
-				"name": "hash",
+				"name": "imageHash",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "hasImage",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "description",
 				"type": "string"
 			},
 			{
@@ -161,133 +250,148 @@
 				"type": "bool"
 			},
 			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "syndicateId",
+				"type": "uint256"
+			}
+		],
+		"name": "PostCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
 				"indexed": false,
+				"internalType": "string",
+				"name": "memeTitle",
+				"type": "string"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "author",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "upvotes",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "downvotes",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "syndicateId",
+				"type": "uint256"
+			}
+		],
+		"name": "PostDownvotes",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "memeTitle",
+				"type": "string"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "author",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "upvotes",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "downvotes",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "syndicateId",
+				"type": "uint256"
+			}
+		],
+		"name": "PostUpvotes",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_textContent",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_memeTitle",
+				"type": "string"
+			},
+			{
 				"internalType": "bool",
-				"name": "isOC",
+				"name": "_hasImage",
 				"type": "bool"
 			},
 			{
-				"indexed": true,
+				"internalType": "string",
+				"name": "_postImageHash",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isSpoiler",
+				"type": "bool"
+			},
+			{
 				"internalType": "uint256",
-				"name": "syndicateId",
+				"name": "_syndicateId",
 				"type": "uint256"
 			}
 		],
-		"name": "ImageCreated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "hash",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "memeTitle",
-				"type": "string"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "author",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "upvotes",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "downvotes",
-				"type": "uint256"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "syndicateId",
-				"type": "uint256"
-			}
-		],
-		"name": "ImageDownvotes",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "hash",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "memeTitle",
-				"type": "string"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "author",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "upvotes",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "downvotes",
-				"type": "uint256"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "syndicateId",
-				"type": "uint256"
-			}
-		],
-		"name": "ImageUpvotes",
-		"type": "event"
+		"name": "uploadTextContent",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "_imageId",
+				"name": "_id",
 				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_commentMessage",
-				"type": "string"
 			}
 		],
-		"name": "addComment",
+		"name": "upvoteMeme",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -362,7 +466,7 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "imageId",
+				"name": "postId",
 				"type": "uint256"
 			},
 			{
@@ -377,49 +481,8 @@
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "_syndicateName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_syndicateDescription",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_nftName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_nftSymbol",
-				"type": "string"
-			}
-		],
-		"name": "createSyndicate",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "uint256",
-				"name": "_id",
-				"type": "uint256"
-			}
-		],
-		"name": "downvoteMeme",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "imageId",
+				"name": "postId",
 				"type": "uint256"
 			}
 		],
@@ -439,7 +502,7 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "imageId",
+						"name": "postId",
 						"type": "uint256"
 					},
 					{
@@ -610,7 +673,7 @@
 				"type": "address"
 			}
 		],
-		"name": "getUserUpvotesTotal",
+		"name": "getUserpostTotal",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -629,7 +692,7 @@
 				"type": "address"
 			}
 		],
-		"name": "getUserpostTotal",
+		"name": "getUserUpvotesTotal",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -642,7 +705,20 @@
 	},
 	{
 		"inputs": [],
-		"name": "imageCount",
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "postCount",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -661,7 +737,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "images",
+		"name": "posts",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -670,7 +746,17 @@
 			},
 			{
 				"internalType": "string",
-				"name": "hash",
+				"name": "imageHash",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "hasImage",
+				"type": "bool"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
 				"type": "string"
 			},
 			{
@@ -704,40 +790,9 @@
 				"type": "bool"
 			},
 			{
-				"internalType": "bool",
-				"name": "isOC",
-				"type": "bool"
-			},
-			{
 				"internalType": "uint256",
 				"name": "syndicateId",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_syndicateId",
-				"type": "uint256"
-			}
-		],
-		"name": "joinSyndicate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -770,6 +825,11 @@
 				"internalType": "uint256",
 				"name": "syndicateCount",
 				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "syndicateImageHash",
+				"type": "string"
 			},
 			{
 				"internalType": "address",
@@ -811,111 +871,8 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_imgHash",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_memeTitle",
-				"type": "string"
-			},
-			{
-				"internalType": "bool",
-				"name": "_isSpoiler",
-				"type": "bool"
-			},
-			{
-				"internalType": "bool",
-				"name": "_isOC",
-				"type": "bool"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_syndicateId",
-				"type": "uint256"
-			}
-		],
-		"name": "uploadImage",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_textContent",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_memeTitle",
-				"type": "string"
-			},
-			{
-				"internalType": "bool",
-				"name": "_isSpoiler",
-				"type": "bool"
-			},
-			{
-				"internalType": "bool",
-				"name": "_isOC",
-				"type": "bool"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_syndicateId",
-				"type": "uint256"
-			}
-		],
-		"name": "uploadTextContent",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_id",
-				"type": "uint256"
-			}
-		],
-		"name": "upvoteMeme",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "userCount",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "userSyndicates",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -954,6 +911,30 @@
 			{
 				"internalType": "uint256",
 				"name": "postTotal",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userSyndicates",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
 				"type": "uint256"
 			}
 		],
