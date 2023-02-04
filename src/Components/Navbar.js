@@ -16,15 +16,15 @@ import { useAccount } from "wagmi";
 const Navbar = () => {
 
   useEffect(() => {
-   <Connect/>
+    <Connect />
   }, [])
-  
+
   const { isConnected, isDisconnected } = useAccount();
   return (
     <div>
       {isConnected && (<>
-      
-          <div className="sidebar-icons">
+
+        <div className="sidebar-icons">
 
 
           <div className="home">
@@ -41,8 +41,8 @@ const Navbar = () => {
 
           <div className="messages">
             <img className="messages-icon" src={Messages} />
-            <Link to="/Syndicates">
-              <h2 className="sidebar-livepeer">Syndicates</h2>
+            <Link to="/Push">
+              <h2 className="sidebar-livepeer">Push Notifications</h2>
             </Link>
           </div>
 
@@ -70,7 +70,7 @@ const Navbar = () => {
           </div>
         </div>
       </>
-      
+
       )}
 
       {isDisconnected && <Navigate to="/login" />}

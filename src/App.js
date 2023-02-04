@@ -16,14 +16,39 @@ import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { useEffect } from 'react';
 import Syndicate from './Components/Syndicate';
 import Huddle from './Components/Huddle';
+import { Chain } from 'wagmi/chains';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
-
+const avalancheChain = {
+  id: 3141,
+  name: 'Filecoin - Hyperspace testnet',
+  network: 'Hyperspace',
+  iconUrl: 'https://example.com/icon.svg',
+  iconBackground: '#fff',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Hyperspace',
+    symbol: 'tFil',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://api.hyperspace.node.glif.io/rpc/v1'],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'HyperSpace', url: 'https://hyperspace.filfox.info/en' },
+    // etherscan: { name: 'SnowTrace', url: 'https://snowtrace.io' },
+  },
+  testnet: true,
+};
 
 
 const { chains, provider } = configureChains(
-  [mainnet, polygonMumbai],
+  [avalancheChain],
   [
-      publicProvider()
+    jsonRpcProvider({
+      rpc: chain => ({ http: chain.rpcUrls.default.http[0] }),
+    }),
   ]
 );
 const { connectors } = getDefaultWallets({
@@ -36,24 +61,26 @@ const wagmiClient = createClient({
   provider,
 });
 
-export default function App()
 
-{
+
+
+export default function App() {
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}> 
-       <Navbar/>
-       <Routes>
-         <Route path="/" element={<LoginPage />} />
-         <Route path="/light-house" element={<LightHouse />} />
-         <Route path="/login" element={<LoginPage />} />
-         <Route path="/home" element={<Home />} />
-         <Route path="/Syndicates" element={<Syndicate />} />
-         <Route path="/Huddle" element={<Huddle />} />
-         {/* <Route path="/proposal" element={<Proposal />} />
+      <RainbowKitProvider chains={chains}>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/light-house" element={<LightHouse />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/home" element={<Home />} />
+          {/* <Route path="/Syndicates" element={<Syndicate />} /> */}
+          <Route path="/Syndicates/:id" element={<Syndicate />} />
+          <Route path="/Huddle" element={<Huddle />} />
+          {/* <Route path="/proposal" element={<Proposal />} />
         
          <Route path="/proposal" element={<Proposal />} /> */}
-       </Routes>
+        </Routes>
       </RainbowKitProvider>
     </WagmiConfig>
   );
@@ -77,4 +104,3 @@ export default function App()
 
 
 
- 

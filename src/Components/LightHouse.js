@@ -20,7 +20,7 @@ const LightHouse = () => {
   const [allUploads, setAllUploads] = useState();
   const [remainingBalance, setRemainingBalance] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [loadingData , setLoadingData] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +61,7 @@ const LightHouse = () => {
   const [encyptFile, setEncyptFile] = useState(null);
   const [inputRefSimple, setInputRefSimple] = useState(null);
   const [inputRefEncrypt, setInputRefEncrypt] = useState(null);
-  
+  // Construct with token and endpoint
   // ** TOASTER
   // * Cid Scan Scan URL
   const [cidScan, setCidScan] = useState("");
@@ -149,6 +149,8 @@ const LightHouse = () => {
     );
   };
 
+
+
   // * Light House Upload Logic with the Progress Data (Encypted File Upload)
   const encryptionSignature = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -191,11 +193,11 @@ const LightHouse = () => {
     setCidScan(url);
     toast(
       "File :" +
-        " " +
-        response.data.Name +
-        " " +
-        "Successfully Encrypted CID" +
-        response.data.Hash,
+      " " +
+      response.data.Name +
+      " " +
+      "Successfully Encrypted CID" +
+      response.data.Hash,
       {
         position: "bottom-center",
         autoClose: 5000,
@@ -362,85 +364,85 @@ const LightHouse = () => {
 
   //* Apply Access Control
 
-    //* Apply for Access control
+  //* Apply for Access control
 
 
-    const[accessCID , setAccessCID] = useState("");
-    const[addressForAccess , setAddressForAccess] = useState("");
-    const[value , setValue] = useState("");
-  
-
-    const handleAddressForAccess = (event) => {
-      setAddressForAccess(event.target.value);
-    };
+  const [accessCID, setAccessCID] = useState("");
+  const [addressForAccess, setAddressForAccess] = useState("");
+  const [value, setValue] = useState("");
 
 
-    const handleCid = (event) => {
-      setAccessCID(event.target.value);
-    };
-
-    const handleValue = (event) => {
-      setValue(event.target.value);
-    };
-  
+  const handleAddressForAccess = (event) => {
+    setAddressForAccess(event.target.value);
+  };
 
 
-    const applyAccessConditions = async(e) =>{
-      const cid = accessCID;
-  
-      // Conditions to add
-      const conditions = [
-        {
-          id: 1,
-          chain: "Hyperspace",
-          method: "balanceOf",
-          standardContractType: "ERC721",
-          contractAddress: addressForAccess,
-          returnValueTest: { comparator: ">=", value: value },
-          parameters: [":userAddress"],
+  const handleCid = (event) => {
+    setAccessCID(event.target.value);
+  };
+
+  const handleValue = (event) => {
+    setValue(event.target.value);
+  };
+
+
+
+  const applyAccessConditions = async (e) => {
+    const cid = accessCID;
+
+    // Conditions to add
+    const conditions = [
+      {
+        id: 1,
+        chain: "Hyperspace",
+        method: "balanceOf",
+        standardContractType: "ERC721",
+        contractAddress: addressForAccess,
+        returnValueTest: { comparator: ">=", value: value },
+        parameters: [":userAddress"],
       },
-  
-      ];
-  
-      const aggregator = "([1])";
-      const {publicKey, signedMessage} = await encryptionSignature();
 
-      const response = await lighthouse.accessCondition(
-        publicKey,
-        cid,
-        signedMessage,
-        conditions,
-        aggregator
-      );
+    ];
+
+    const aggregator = "([1])";
+    const { publicKey, signedMessage } = await encryptionSignature();
+
+    const response = await lighthouse.accessCondition(
+      publicKey,
+      cid,
+      signedMessage,
+      conditions,
+      aggregator
+    );
 
 
-      const url = BaseUrl + response.data.cid;
-      setCID(url);
-     
+    const url = BaseUrl + response.data.cid;
+    setCID(url);
 
-      toast.success(
-        "Shared Succesfully with :" + " " + response.data.cid,
-        {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        }
-      );
-  
-      console.log(response);
-      
-          // data: {
-          //   cid: "QmZkEMF5y5Pq3n291fG45oyrmX8bwRh319MYvj7V4W4tNh",
-          //   status: "Success"
-          // }
-       
-    }
-  
+
+    toast.success(
+      "Shared Succesfully with :" + " " + response.data.cid,
+      {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      }
+    );
+
+    console.log(response);
+
+    // data: {
+    //   cid: "QmZkEMF5y5Pq3n291fG45oyrmX8bwRh319MYvj7V4W4tNh",
+    //   status: "Success"
+    // }
+
+  }
+
 
   return (
     <>
@@ -483,29 +485,29 @@ const LightHouse = () => {
               </a>
             </form>
 
-          {/* Encrypted File Upload  */}
-          <div className="encrypted-files-upload">
-            <img className="file-icon" src={File} onClick={handleImageClick2} />
-            <input
-              type="file"
-              ref={(input) => setInputRefEncrypt(input)}
-              onChange={handleEncyptedFile}
-              style={{ display: "none" }}
+            {/* Encrypted File Upload  */}
+            <div className="encrypted-files-upload">
+              <img className="file-icon" src={File} onClick={handleImageClick2} />
+              <input
+                type="file"
+                ref={(input) => setInputRefEncrypt(input)}
+                onChange={handleEncyptedFile}
+                style={{ display: "none" }}
               />
-            {!encyptFile && (
-              <p className="box-text">Upload files you wanna (Encypt)</p>
+              {!encyptFile && (
+                <p className="box-text">Upload files you wanna (Encypt)</p>
               )}
-            {encyptFile && (
-              <p className="box-text">{encyptFile.target.files[0].name}</p>
+              {encyptFile && (
+                <p className="box-text">{encyptFile.target.files[0].name}</p>
               )}
 
-            <a onClick={deployEncrypted} className="upload-btn">
-              Upload File
-            </a>
+              <a onClick={deployEncrypted} className="upload-btn">
+                Upload File
+              </a>
+            </div>
           </div>
-              </div>
 
-            {/* decrypt & share buttons */}
+          {/* decrypt & share buttons */}
 
           <div className="form-btns">
             <h4 className="button-guide">
@@ -544,7 +546,7 @@ const LightHouse = () => {
                 />
                 (FileType) text
                 <input
-                className="checkbox-img"
+                  className="checkbox-img"
                   type="radio"
                   value="image/jpeg"
                   checked={selectedOption === "image/jpeg"}
@@ -564,24 +566,24 @@ const LightHouse = () => {
                 Share file
               </a>
 
-                <input
-                  className="cid-input"
-                  type="text"
-                  placeholder="Enter CID:"
-                  value={shareCid}
-                  onChange={handleShare}
-                  maxLength={46}
-                />
+              <input
+                className="cid-input"
+                type="text"
+                placeholder="Enter CID:"
+                value={shareCid}
+                onChange={handleShare}
+                maxLength={46}
+              />
               {errorShare && <p style={{ color: "red" }}>{errorShare}</p>}
 
-                <input
-                  className="cid-input"
-                  type="text"
-                  placeholder="Enter address:"
-                  value={shareAddress}
-                  onChange={handleAddress}
-                  maxLength={42}
-                />
+              <input
+                className="cid-input"
+                type="text"
+                placeholder="Enter address:"
+                value={shareAddress}
+                onChange={handleAddress}
+                maxLength={42}
+              />
               {errorAddress && <p style={{ color: "red" }}>{errorAddress}</p>}
             </form>
           </div>
@@ -628,87 +630,87 @@ const LightHouse = () => {
               </tbody>
             )}
           </table> */}
-            {/* <td>{array.publicKey}</td> */}
+          {/* <td>{array.publicKey}</td> */}
 
           <div className="table">
             <table className="styled-table">
               <thead>
-                  <tr>
+                <tr>
                   <th>FileName</th>
                   <th>FileType</th>
                   <th>Encryption</th>
                   <th>CID</th>
                   <th>Size</th>
                   <th>createdAt</th>
-                  </tr>
+                </tr>
               </thead>
               {loading && (
                 <tbody>
-                {allUploads.map((array, index) => (
-                  <tr key={index} className='active-row'>
-                    <td>{array.fileName}</td>
-                    <td c>{array.mimeType}</td>
-                    {array.encryption === true ? <td> <img className="table-file" src={Lock}/></td> : <td> <img className="table-lock" src={File2}/> </td>}
-                    <td>{array.cid}</td>
-                    <td>{convertBytesToKilobytes(array.fileSizeInBytes)}</td>
-                    <td>{convertTimestampToDate(array.createdAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
+                  {allUploads.map((array, index) => (
+                    <tr key={index} className='active-row'>
+                      <td>{array.fileName}</td>
+                      <td c>{array.mimeType}</td>
+                      {array.encryption === true ? <td> <img className="table-file" src={Lock} /></td> : <td> <img className="table-lock" src={File2} /> </td>}
+                      <td>{array.cid}</td>
+                      <td>{convertBytesToKilobytes(array.fileSizeInBytes)}</td>
+                      <td>{convertTimestampToDate(array.createdAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
 
-            )}
-      </table>
+              )}
+            </table>
 
           </div>
 
           <div className="container">
             <div className="title">Add Access Condition</div>
             <div className="content">
-            <form action="#">
+              <form action="#">
                 <div className="user-details">
-                    <div className="input-box">
-                        <span className="details">Chain</span>
-                        <input type="text" placeholder="Hyperspace" disabled/>
-                    </div>
-                    <div className="input-box">
-                        <span className="details">Contract Type</span>
-                        <input type="text" placeholder="ERC721" required disabled/>
-                    </div>
-                    <div className="input-box">
-                        <span className="details">Method</span>
-                        <input type="text" placeholder="balanceOf" disabled/>
-                    </div>
-                    <div className="input-box">
-                        <span className="details">Contract Address</span>
-                        <input type="text" onChange={handleAddressForAccess} maxLength={42} placeholder="Contract Address"/>
-                    </div>
-                    <div className="input-box">
-                        <span className="details">Comparator</span>
-                        <input type="text" placeholder=">=" disabled/>
-                    </div>
-                    <div className="input-box">
-                        <span className="details">Value</span>
-                        <input type="text" onChange={handleValue} placeholder="Value" required/>
-                    </div>
-                    <div className="input-box">
-                        <span className="details">Paramter</span>
-                        <input type="text" placeholder=":userAddress" disabled/>
-                    </div>
-                    <div className="input-box">
-                        <span className="details">CID</span>
-                        <input type="text" onChange={handleCid} placeholder="Enter Your Cid Here" maxLength={46} />
-                    </div>
+                  <div className="input-box">
+                    <span className="details">Chain</span>
+                    <input type="text" placeholder="Hyperspace" disabled />
+                  </div>
+                  <div className="input-box">
+                    <span className="details">Contract Type</span>
+                    <input type="text" placeholder="ERC721" required disabled />
+                  </div>
+                  <div className="input-box">
+                    <span className="details">Method</span>
+                    <input type="text" placeholder="balanceOf" disabled />
+                  </div>
+                  <div className="input-box">
+                    <span className="details">Contract Address</span>
+                    <input type="text" onChange={handleAddressForAccess} maxLength={42} placeholder="Contract Address" />
+                  </div>
+                  <div className="input-box">
+                    <span className="details">Comparator</span>
+                    <input type="text" placeholder=">=" disabled />
+                  </div>
+                  <div className="input-box">
+                    <span className="details">Value</span>
+                    <input type="text" onChange={handleValue} placeholder="Value" required />
+                  </div>
+                  <div className="input-box">
+                    <span className="details">Paramter</span>
+                    <input type="text" placeholder=":userAddress" disabled />
+                  </div>
+                  <div className="input-box">
+                    <span className="details">CID</span>
+                    <input type="text" onChange={handleCid} placeholder="Enter Your Cid Here" maxLength={46} />
+                  </div>
 
                 </div>
 
                 <div className="button">
-                <input className="applyAccessConditions" onClick={applyAccessConditions} value="Create Access Condition"/>
+                  <input className="applyAccessConditions" onClick={applyAccessConditions} value="Create Access Condition" />
                 </div>
-            </form>
+              </form>
             </div>
-</div>
+          </div>
 
-         
+
         </div>
       )}
     </>
