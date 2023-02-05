@@ -9,7 +9,7 @@ import LoginPage from './Components/LoginPage';
 import Connect from './Components/Connect';
 import LightHouse from './Components/LightHouse';
 
-import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, createClient, useAccount, WagmiConfig } from "wagmi";
 import { mainnet, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
@@ -67,10 +67,13 @@ const wagmiClient = createClient({
 
 
 export default function App() {
+  const {isConnected} = useAccount()
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-        <Navbar />
+        {isConnected ? 
+      <>
+      <Navbar />
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/light-house" element={<LightHouse />} />
@@ -86,6 +89,7 @@ export default function App() {
          <Route path="/Post/:id" element={<Post/>} />
 
         </Routes>
+        </> : <LoginPage/>  }
       </RainbowKitProvider>
     </WagmiConfig>
   );

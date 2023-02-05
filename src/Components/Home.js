@@ -13,7 +13,7 @@ const Home = () => {
   const [postContent, setPostContent] = useState("");
   const [Syndicate, setSyndicate] = useState([]);
   const [Posts, setPosts] = useState("");
-  const {address} = useAccount()
+  const {address , isConnected} = useAccount()
   // Create a provider using the RPC link
 
   // ** API GOD_FATHER
@@ -171,17 +171,21 @@ function UnixToTimeAgo(props) {
 
     // * Main State Loader
     useEffect(() => {
+      if(isConnected) {
       async function main() {
         await getAllSyndicates();
         await getHomePosts()
       }
   
       main();
+    }
     }, [address]);
 
   return (
     <>
-      <div className="home-page">
+    {isConnected &&
+    
+    <div className="home-page">
         <div className="communities-page">
           <div className="create-community">
             <Link to={"/community"}>
@@ -244,6 +248,7 @@ function UnixToTimeAgo(props) {
                  style={{ textDecoration: "none" }}
                  state={{
                    id: item.returnValues.id,
+                   syndicateId: item.returnValues.syndicateId
                  }}
                 >
                   <button className="details-btn">View Details</button>
@@ -253,6 +258,8 @@ function UnixToTimeAgo(props) {
           </div>
         )}
       </div>
+    }
+      
     </>
   );
 };

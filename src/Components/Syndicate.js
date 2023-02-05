@@ -6,9 +6,12 @@ import nftAbi from "../lib/nftAbi.json"
 import Web3 from "web3";
 import { ethers } from "ethers";
 import lighthouse from "@lighthouse-web3/sdk";
-import File from "../images/icons/file2.png";
 import "./Syndicate.css";
 import { useAccount } from "wagmi";
+import "../Components/Syndicate.css"
+import person1 from "../images/dps/p1.jpeg"
+import File from "../images/icons/file2.png"
+import Cake from "../images/icons/cake.png"
 
 function Syndicate() {
 
@@ -80,11 +83,20 @@ function Syndicate() {
   const { state: syndicateId } = useLocation();
   const [syndicate, setSyndicate] = useState();
 
+  // * BigNumber to JS Number
+  function bigToNum(_value) {
+    const bigNumber = ethers.BigNumber.from(_value);
+    return bigNumber.toNumber();
+  }
+
+  // * Convert Unix to date format
+  function convertUnixToDate(timestamp) {
+    return new Date(timestamp * 1000).toLocaleString();
+  }
   // * Get a Syndicate by Id
   async function getSyndicate() {
     const syndicate = await mainContract.syndicates(syndicateId.id);
     setSyndicate(syndicate);
-    
     return syndicate;
     
   }
@@ -186,6 +198,31 @@ function removeDuplicateObjects(array) {
     }
   });
 }
+  // * Unix to time Ago
+function UnixToTimeAgo(props) {
+  const timestamp = props;
+  const now = Date.now();
+  const difference = now - timestamp * 1000;
+  
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+  
+  if (difference >= day) {
+    return Math.floor(difference / day) + " days ago";
+  } else if (difference >= hour) {
+    return Math.floor(difference / hour) + " hours ago";
+  } else if (difference >= minute) {
+    return Math.floor(difference / minute) + " minutes ago";
+  } else {
+    return Math.floor(difference / second) + " seconds ago";
+  }
+}
+
+
+
+  // * Get all the SyndicatePosts
   async function getSyndicatePosts() {
 
     // * Create Web3 Provider
@@ -218,9 +255,15 @@ function removeDuplicateObjects(array) {
     }
     PostsInSyndicate.reverse()
     setAllSyndicatesPosts(PostsInSyndicate)
+    console.log("Posts :")
     console.log(PostsInSyndicate)
     return PostsInSyndicate
 }
+
+
+
+
+
 
 
   // * UseEffect for the Whole Statee
@@ -239,92 +282,179 @@ function removeDuplicateObjects(array) {
   }, [address]);
 
   return (
-    <div className="coming-soon">
-      {isOwnerNFT && 
-      <>
-      <div> Syndicate Owner </div>
-      <input
-      type="text"
-      placeholder="Member Address"
-      value={memberAddress}
-      onChange={(e) => setMemberAddress(e.target.value)}
-      required
-       />
+    <>
+    {syndicate && allSyndicatePosts &&
+    <div className="community">
+      <div className="title">
+        <img className="title-img" src={person1} />
+        <h1 className="title-heading">{syndicate.syndicateName}</h1>
+      </div>
 
-      <a onClick={addMember}>Add to Syndicate</a>
-    </>
-    }
-    <div>Balance of NFT : {userBalance}</div>
-      {/* <img src={src} alt="Loading Image" />; */}
-      <form className="form">
-        <div className="form-inputs">
-          <input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
+      <hr
+        style={{ border: "3px solid rgba(32, 32, 32, 1)", margin: "15px 50px" }}
+      />
+
+      <div className="about">
+        <h2 className="about-title">{syndicate.syndicateDescription}</h2>
+        <hr
+          style={{
+            border: "px solid rgba(32, 32, 32, 1)",
+            margin: "5px -10px",
+          }}
+        />
+
+        <h3 className="description">
+          s/{syndicate.syndicateName} {syndicate.syndicateDescription}
+        </h3>
+
+        <div className="dob">
+          <img className="cake" src={Cake} />
+          <h4 className="creation-date">
+            Created on {convertUnixToDate(bigToNum(syndicate.dateCreated))}
+          </h4>
         </div>
-        <div>
-          <div className="text">Contain Spoiler</div>
-        </div>
-        <div className="form-radio-buttons">
+
+        <h3 className="syndicate-id">Syndicate ID: {syndicateId.id} </h3>
+
+        <h3 className="creator-address">
+          Creator's Address: {syndicate.syndicateCreator}
+        </h3>
+        <h3 className="creator-address">Nft Name: {syndicate._nftName}</h3>
+        <h3 className="creator-address">NFT Symbol: {syndicate._nftSymbol}</h3>
+        <h3 className="creator-address">
+          NFT Address: {syndicate.NftContract}
+        </h3>
+      </div>
+
+      <div className="create-post">
+        <form className="post-area">
+          <img className="post-image" src={person1} />
           <label>
-            <input
-              type="radio"
-              name="spoiler"
-              value="true"
-              checked={spoiler === true}
-              onChange={(e) => setSpoiler(e.target.value)}
-              required
-            />
-            True
+            <input className="post" type="text" placeholder="Create Post" />
           </label>
-          <label>
-            <input
-              type="radio"
-              name="spoiler"
-              value="false"
-              checked={spoiler === false}
-              onChange={(e) => setSpoiler(e.target.value)}
-              required
-            />
-            False
-          </label>
-        </div>
-        <div>
-          <img className="file-icon" src={File} onClick={handleImageClick} />
-          <input
-            type="file"
-            ref={(input) => setInputRefSimple(input)}
-            onChange={handleSimpleFile}
-            style={{ display: "none" }}
-          />
-          {!simpleFile && (
-            <p className="box-text">Upload files (Simple Upload) </p>
-          )}
-          {simpleFile && (
-            <p className="box-text">{simpleFile.target.files[0].name}</p>
-          )}
-        </div>
-        <div>
-          <div className="text">Contains Image</div>
-        </div>
+          {/* <img className='file' src={File}/> */}
+        </form>
+        <button className="post-btn">Post</button>
+      </div>
 
+      <div className="home">
+        <div className="posts">
+          {allSyndicatePosts.map((posts) => (    
+            <div className="community-box" key={posts.returnValues.datePosted} >
+              <img className="community-post-pic" src={person1} />
 
-        <a onClick={createPostButton} className="form-button">
-          Post
-        </a>
-      </form>
+              <div className="community-post-details">
+                <h2 className="community-post-title">{posts.returnValues.memeTitle}</h2>
+
+                <h4 className="community-comment-time">{UnixToTimeAgo(posts.returnValues.datePosted)}</h4>
+
+                <p className="community-comment-description">
+                {posts.returnValues.description}
+                </p>
+                <Link
+                 to={`/Post/${posts.returnValues.id}`}
+                 style={{ textDecoration: "none" }}
+                 state={{
+                   id: posts.returnValues.id,
+                   syndicateId: posts.returnValues.syndicateId
+                 }}
+                >
+                <button className="community-details-btn">View Details</button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
+    }
+    </>
+
+    // <div className="coming-soon">
+    //   {isOwnerNFT &&
+    //   <>
+    //   <div> Syndicate Owner </div>
+    //   <input
+    //   type="text"
+    //   placeholder="Member Address"
+    //   value={memberAddress}
+    //   onChange={(e) => setMemberAddress(e.target.value)}
+    //   required
+    //    />
+
+    //   <a onClick={addMember}>Add to Syndicate</a>
+    // </>
+    // }
+    // <div>Balance of NFT : {userBalance}</div>
+    //   {/* <img src={src} alt="Loading Image" />; */}
+    //   <form className="form">
+    //     <div className="form-inputs">
+    //       <input
+    //         type="text"
+    //         placeholder="Description"
+    //         value={description}
+    //         onChange={(e) => setDescription(e.target.value)}
+    //         required
+    //       />
+    //       <input
+    //         type="text"
+    //         placeholder="Title"
+    //         value={title}
+    //         onChange={(e) => setTitle(e.target.value)}
+    //         required
+    //       />
+    //     </div>
+    //     <div>
+    //       <div className="text">Contain Spoiler</div>
+    //     </div>
+    //     <div className="form-radio-buttons">
+    //       <label>
+    //         <input
+    //           type="radio"
+    //           name="spoiler"
+    //           value="true"
+    //           checked={spoiler === true}
+    //           onChange={(e) => setSpoiler(e.target.value)}
+    //           required
+    //         />
+    //         True
+    //       </label>
+    //       <label>
+    //         <input
+    //           type="radio"
+    //           name="spoiler"
+    //           value="false"
+    //           checked={spoiler === false}
+    //           onChange={(e) => setSpoiler(e.target.value)}
+    //           required
+    //         />
+    //         False
+    //       </label>
+    //     </div>
+    //     <div>
+    //       <img className="file-icon" src={File} onClick={handleImageClick} />
+    //       <input
+    //         type="file"
+    //         ref={(input) => setInputRefSimple(input)}
+    //         onChange={handleSimpleFile}
+    //         style={{ display: "none" }}
+    //       />
+    //       {!simpleFile && (
+    //         <p className="box-text">Upload files (Simple Upload) </p>
+    //       )}
+    //       {simpleFile && (
+    //         <p className="box-text">{simpleFile.target.files[0].name}</p>
+    //       )}
+    //     </div>
+    //     <div>
+    //       <div className="text">Contains Image</div>
+    //     </div>
+
+    //     <a onClick={createPostButton} className="form-button">
+    //       Post
+    //     </a>
+    //   </form>
+    // </div>
   );
 }
 
