@@ -238,10 +238,6 @@ function removeDuplicateObjects(array) {
     main();
   }, [address]);
 
-
-
- 
-
   return (
     <div className="coming-soon">
       {isOwnerNFT && 

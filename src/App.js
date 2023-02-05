@@ -18,6 +18,8 @@ import Syndicate from './Components/Syndicate';
 import Huddle from './Components/Huddle';
 import { Chain } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import CreateCommunity from './Components/CreateCommunity';
+import Post from './Components/Post';
 
 const avalancheChain = {
   id: 3141,
@@ -80,6 +82,9 @@ export default function App() {
           {/* <Route path="/proposal" element={<Proposal />} />
         
          <Route path="/proposal" element={<Proposal />} /> */}
+         <Route path="/Community" element={<CreateCommunity />} />
+         <Route path="/Post/:id" element={<Post/>} />
+
         </Routes>
       </RainbowKitProvider>
     </WagmiConfig>

@@ -23,15 +23,10 @@ const Navbar = () => {
   return (
     <div>
       {isConnected && (<>
-
         <div className="sidebar-icons">
-
-
           <div className="home">
             <img className="shadow-icon" src={Shadow} />
           </div>
-
-
           <div className="home">
             <img className="home-icon" src={Home} />
             <Link to="/Home">

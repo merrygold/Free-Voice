@@ -1,0 +1,169 @@
+
+/* access control form */
+
+
+.container{
+    /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    */
+
+    display: block;
+    margin: 100px auto;
+
+    max-width: 1200px;
+    width: 100%;
+
+    color: white;
+    padding: 25px 30px;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+.title{
+    background-color: transparent;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 500;
+    position: relative;
+}
+
+.content form .user-details{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+}
+form .user-details .input-box{
+    margin-bottom: 15px;
+    width: calc(100% / 2 - 20px);
+}
+form .input-box span.details{
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.user-details .input-box input{
+    height: 45px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    padding-left: 15px;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
+}
+.user-details .input-box input:focus,
+.user-details .input-box input:valid{
+    border-color: #9b59b6;
+}
+    form .gender-details .gender-title{
+    font-size: 20px;
+    font-weight: 500;
+    }
+    form .category{
+    display: flex;
+    width: 80%;
+    margin: 14px 0 ;
+    justify-content: space-between;
+    }
+    form .category label{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    }
+    form .category label .dot{
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background: #d9d9d9;
+    border: 5px solid transparent;
+    transition: all 0.3s ease;
+}
+    #dot-1:checked ~ .category label .one,
+    #dot-2:checked ~ .category label .two,
+    #dot-3:checked ~ .category label .three{
+    background: #9b59b6;
+    border-color: #d9d9d9;
+    }
+    /* form input[type="radio"]{
+    display: none;
+    } */
+    form .button{
+    height: 45px;
+    margin: 35px 0
+    }
+    form .button input{
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(0, 139, 247, 1);
+
+    }
+    form .button input:hover{
+    transform: scale(0.99);
+    /* background: linear-gradient(269.96deg, #139FD6 0.21%, #9328D1 100.14%); */
+
+
+    }
+    @media(max-width: 584px){
+    .container{
+    max-width: 100%;
+}
+form .user-details .input-box{
+    margin-bottom: 15px;
+    width: 100%;
+    }
+    form .category{
+    width: 100%;
+    }
+    .content form .user-details{
+    max-height: 300px;
+    overflow-y: scroll;
+    }
+    .user-details::-webkit-scrollbar{
+    width: 5px;
+    }
+    }
+    @media(max-width: 459px){
+    .container .content .category{
+    flex-direction: column;
+    }
+}
+
+.details-btn{
+    /* margin: 20px 30px; */
+    margin-bottom: 80px;
+    padding: 10px 10px;
+    background: linear-gradient(90deg, #139FD6 0%, #9328D1 97.35%);
+    color: white;
+    border-radius: 25px;
+    font-size: 16px;
+    float: right;
+    cursor: pointer;
+    border: none;
+}
+
+
+.disable-btn{
+    /* margin: 20px 30px; */
+    margin-bottom: 80px;
+    padding: 10px 10px;
+    background: linear-gradient(90deg, #264450 0%, #413e43 97.35%);
+    color: white;
+    border-radius: 25px;
+    font-size: 16px;
+    float: right;
+    cursor: pointer;
+    border: none;
+}

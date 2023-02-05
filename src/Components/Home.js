@@ -3,10 +3,11 @@ import { ethers } from "ethers";
 import "../Components/Home.css";
 import abi from "../lib/abi.json";
 import Web3 from "web3";
-// import File from "../images/icons/file2.png";
-import File from "../images/icons/file2.png";
+import person1 from "../images/thumbnails/c1.png"
+import img1 from "../images/thumbnails/nft.jpg"
+
 import { Link } from "react-router-dom";
-import lighthouse from "@lighthouse-web3/sdk";
+
 import { useAccount } from "wagmi";
 const Home = () => {
   const [postContent, setPostContent] = useState("");
@@ -74,82 +75,7 @@ const Home = () => {
     console.log(filterSyndicates);
   }
 
-  // * State Hooks for Creating a Syndicate
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
-  const [NFTname, setNFTname] = useState("");
-  const [NFTsymbol, setNFTsymbol] = useState("");
 
-  // * Input event handlers
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-  const handleDescChange = (event) => {
-    setDesc(event.target.value);
-  };
-  const handleNFTnameChange = (event) => {
-    setNFTname(event.target.value);
-  };
-  const handleNFTsymbolChange = (event) => {
-    setNFTsymbol(event.target.value);
-  };
-
-  // * Create a New Syndicate
-  async function createSyndicate(
-    _name,
-    _desc,
-    _NFTname,
-    _NFTsymbol,
-    _imageHash
-  ) {
-    const signer = new ethers.providers.Web3Provider(
-      window.ethereum
-    ).getSigner();
-    const signContract = new ethers.Contract(ContractAddress, ABI, signer);
-    const newSyndicate = await signContract.createSyndicate(
-      _name,
-      _desc,
-      _NFTname,
-      _NFTsymbol,
-      _imageHash
-    );
-
-    await newSyndicate.wait();
-    console.log("New Syndicate Created");
-  }
-
-  // * Button onClick "Create New Syndicate"
-  const createSyndicateButton = async () => {
-    const imageCid = await imageUploadSyndicate();
-    await createSyndicate(name, desc, NFTname, NFTsymbol, imageCid);
-  };
-
-  // * Image Upload function for the Syndicate
-  const [simpleFile, setSimpleFile] = useState(null);
-  const [inputRefSimple, setInputRefSimple] = useState(null);
-
-  const progressCallback = (progressData) => {
-    let percentageDone =
-      100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
-    console.log(percentageDone);
-  };
-  const imageUploadSyndicate = async () => {
-    // * Upload File to lighthouse
-    const output = await lighthouse.upload(simpleFile, API, progressCallback);
-    // * Get Cid of the file
-    const imageCid = output.data.Hash;
-    return imageCid;
-  };
-
-  // * Get that Uploaded Simple file and then saving it to a state so we can use later
-  const handleSimpleFile = (e) => {
-    console.log(e);
-    setSimpleFile(e);
-  };
-
-  const handleImageClick = () => {
-    inputRefSimple.click();
-  };
 
   // * Get all the posts of the syndicates user joined on the Home page
 
@@ -218,10 +144,29 @@ const Home = () => {
     console.log("These are the Posts")
     console.log(userHomePosts)
     return userHomePosts;
-    
-
+  
 }
 
+function UnixToTimeAgo(props) {
+  const timestamp = props;
+  const now = Date.now();
+  const difference = now - timestamp * 1000;
+  
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+  
+  if (difference >= day) {
+    return Math.floor(difference / day) + " days ago";
+  } else if (difference >= hour) {
+    return Math.floor(difference / hour) + " hours ago";
+  } else if (difference >= minute) {
+    return Math.floor(difference / minute) + " minutes ago";
+  } else {
+    return Math.floor(difference / second) + " seconds ago";
+  }
+}
 
 
     // * Main State Loader
@@ -234,85 +179,80 @@ const Home = () => {
       main();
     }, [address]);
 
-
-
-
   return (
     <>
-      <div>Posts will Display here</div>
+      <div className="home-page">
+        <div className="communities-page">
+          <div className="create-community">
+            <Link to={"/community"}>
+              <button className="create-btn">Create your own community</button>
+            </Link>
+          </div>
+          <div className="communities">
+            {Syndicate.map((item) => (
+              <div
+                key={item.returnValues.syndicateCount}
+                className="community-box"
+              >
+                <img className="community-pic" src={person1} />
 
-      {/*Image Upload*/}
-      <form className="files-upload">
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={handleNameChange}
-          />
+                <div className="community-details">
+                  <h2 className="community-name">
+                    {item.returnValues.syndicateName}
+                  </h2>
+                  <Link
+                    to={`/Syndicates/${item.returnValues.syndicateCount}`}
+                    style={{ textDecoration: "none" }}
+                    state={{
+                      id: item.returnValues.syndicateCount,
+                    }}
+                  >
+                    <button className="join-community">Join Community</button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div>
-          <label htmlFor="desc">Description:</label>
-          <input
-            type="text"
-            id="desc"
-            value={desc}
-            onChange={handleDescChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="NFTname">NFT Name:</label>
-          <input
-            type="text"
-            id="NFTname"
-            value={NFTname}
-            onChange={handleNFTnameChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="NFTsymbol">NFT Symbol:</label>
-          <input
-            type="text"
-            id="NFTsymbol"
-            value={NFTsymbol}
-            onChange={handleNFTsymbolChange}
-          />
-        </div>
-        <img className="file-icon" src={File} onClick={handleImageClick} />
-        <input
-          type="file"
-          ref={(input) => setInputRefSimple(input)}
-          onChange={handleSimpleFile}
-          style={{ display: "none" }}
-        />
-        {!simpleFile && (
-          <p className="box-text">Upload files (Simple Upload) </p>
+        {displayPosts && (
+          <div>
+            {displayPosts.map((item) => (
+              <div className="posts" key={item.returnValues.id}>
+                <div className="posts-box">
+                  <img className="post-pic" src={person1} />
+
+                  <div className="post-details">
+                    <h3 className="post-title">
+                      {item.returnValues.memeTitle}
+                    </h3>
+
+                    <h4 className="post-time">
+                      {UnixToTimeAgo(item.returnValues.datePosted)}
+                    </h4>
+
+                    <p className="post-description">
+                      {item.returnValues.description}
+                    </p>
+                  </div>
+                </div>
+                {item.returnValues.hasImage && (
+                  <img className="post-img" src={img1} />
+                )}
+
+                <Link
+                 to={`/Post/${item.returnValues.id}`}
+                 style={{ textDecoration: "none" }}
+                 state={{
+                   id: item.returnValues.id,
+                 }}
+                >
+                  <button className="details-btn">View Details</button>
+                </Link>
+              </div>
+            ))}
+          </div>
         )}
-        {simpleFile && (
-          <p className="box-text">{simpleFile.target.files[0].name}</p>
-        )}
-
-        <a onClick={createSyndicateButton} className="upload-btn">
-          Create Syndicate
-        </a>
-      </form>
-
-      <div className="Syndicate">Syndicate Array</div>
-      {Syndicate.map((item) => (
-        <ul key={item.returnValues.syndicateCount} className="Syndicate">
-          <Link
-            to={`/Syndicates/${item.returnValues.syndicateCount}`}
-            style={{ textDecoration: "none" }}
-            state={{
-              id: item.returnValues.syndicateCount,
-            }}
-          >
-            <li>{item.blockHash}</li>
-            <li>{item.returnValues.syndicateCount}</li>
-          </Link>
-        </ul>
-      ))}
+      </div>
     </>
   );
 };
