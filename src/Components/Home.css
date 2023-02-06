@@ -212,7 +212,7 @@ form {
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    width: 1000px;
+    width: 850px;
     border-radius: 20px;
 }
 
@@ -375,4 +375,4 @@ form {
 .upvote p,
 .comments p{
     font-size: 14px;
-}
+}   
