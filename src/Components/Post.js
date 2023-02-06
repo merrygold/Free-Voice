@@ -363,14 +363,6 @@ const Post = () => {
     <div>
       {isConnected && (
         <div>
-        <div>
-        {isMember ?
-          <div style={{color:"white"}}> Ap Member hain Janab</div>
-          :
-          <div style={{color:"white"}}> bhag BSDK</div> 
-        
-        }
-        </div>
         <div className="home">
           {!gettingData && 
           <div className="comment-page">

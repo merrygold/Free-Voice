@@ -91,6 +91,9 @@ Link {
     width: 35px;
     height: 35px;
     margin-right: 10px;
+    border-radius: 30px;
+    border: solid rgb(98, 98, 98) 2px;
+    padding: 5px;
 }
 
 .shadow-icon{
@@ -104,12 +107,16 @@ Link {
     width: 35px;
     height: 35px;
     margin-right: 10px;
+    border-radius: 30px;
+    border: solid rgb(98, 98, 98) 2px;
 }
 
 .bell-icon{
     width: 35px;
     height: 35px;
     margin-right: 10px;
+    border-radius: 30px;
+    border: solid rgb(98, 98, 98) 2px;
 }
 
 .huddle-icon{
@@ -122,6 +129,8 @@ Link {
     width: 35px;
     height: 35px;
     margin-right: 10px;
+    border-radius: 30px;
+    border: solid rgb(98, 98, 98) 2px;
 }
 
 .search-bar{
@@ -149,12 +158,13 @@ Link {
 .user-icon{
     margin: 0px 10px;
     width: 30px;
+    
 }
 
 .home-data{
-    background: rgba(25, 23, 23, 1);
+    background: rgb(255, 255, 255);
     padding: 20px 20px;
-
+color: black;
     border-radius: 25px;
 
     display: flex;

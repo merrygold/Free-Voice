@@ -26,12 +26,12 @@ function Syndicate() {
 
   const ABI = abi;
 
+  const NftABI = nftAbi
+
   const ContractAddress = "0x9528f220eBBC5770FAAc338d5018d871708e6EDb";
 
   const mainContract = new ethers.Contract(ContractAddress, ABI, provider);
 
-  // * State Variables for NFT Contract
-  const NftABI = nftAbi;
 
   // * BigNumber to JS Number
   function bigToNum(_value) {
@@ -43,22 +43,95 @@ function Syndicate() {
   const { address } = useAccount();
   const [isOwnerNFT, setIsOwnerNFT] = useState(false);
   const [memberAddress, setMemberAddress] = useState("");
-  const [userBalance, setUserBalance] = useState(0);
+  const [isMember, setIsMember] = useState(false);
+  const [isUserJoined, setIsUserJoined] = useState(false);
+
+
+  
+  async function joinSyndicate() {
+
+    const signer = new ethers.providers.Web3Provider(
+      window.ethereum
+    ).getSigner();
+    const mainContract = new ethers.Contract(ContractAddress, ABI, signer);
+    const joinSyndicate = await mainContract.joinSyndicate(syndicate.syndicateCount);
+    await joinSyndicate.wait() 
+
+  }
+
+
+  
+  async function getUserJoined(currentSyndicateId) {
+  
+      // * Create Web3 Provider
+      const web3 = new Web3(new Web3.providers.HttpProvider(RPC));
+  
+      // * Create Web3 Contract
+      const contract = new web3.eth.Contract(ABI, ContractAddress);
+  
+      //* Get All User Syndicates
+      const userSyndicatesDouble = await contract.getPastEvents('EventJoinSyndicate', {
+          fromBlock: 50000,
+          toBlock: 'latest',
+      },
+      function(error, eventsArray) {
+        return eventsArray
+      }
+      );
+  
+      // * Get Current User Joined Syndicates
+      const userSyndicatesArray = removeDuplicateObjects(userSyndicatesDouble)
+      const userSyndicates = []
+  
+      for (let i = 0; i < userSyndicatesArray.length; i++) {
+          const currentSyndicate = userSyndicatesArray[i]
+          // * If Event Match User joining
+          if(currentSyndicate.returnValues._member == address) {
+              // * Push syndicate Id to userSyndicates
+              userSyndicates.push(currentSyndicate.returnValues.id)
+          }
+      }
+  
+      // * If userSyndicates.includes(syndicateId) then isUserJoined = True
+      if(userSyndicates.includes(currentSyndicateId))
+      {
+        setIsUserJoined(true)
+      }
+      else 
+      {
+        setIsUserJoined(false)
+      }
+    
+  
+  
+  }
+
+
+
+
+
+
+   // * Get isMember
+   async function getMember(syndicateData) {
+    const isMember = await mainContract.checkOwnership(address , syndicateData.syndicateCount);
+    if (isMember) {
+      setIsMember(true);
+      return true;
+    } else {
+      setIsMember(false);
+      return false
+    }
+  }
+  
 
   // * Get isOwner
-  async function getOwner(_nftAddress) {
-    const nftContract = new ethers.Contract(_nftAddress, NftABI, provider);
-    const isOwner = await nftContract.owner();
-    if (isOwner == address) {
+  async function getOwner(syndicateData) {
+    if (syndicateData.syndicateCreator == address) {
       setIsOwnerNFT(true);
-      const balance = await nftContract.balanceOf(address);
-      setUserBalance(bigToNum(balance));
       return true;
     } else {
       setIsOwnerNFT(false);
-      const balance = await nftContract.balanceOf(address);
-      setUserBalance(bigToNum(balance));
-      console.log(bigToNum(balance));
+      return false
     }
   }
 
@@ -98,91 +171,11 @@ function Syndicate() {
     return syndicate;
   }
 
-  // * State Hooks for CreatePost
-  const [description, setDescription] = useState("");
-  const [title, setTitle] = useState("");
-  const [spoiler, setSpoiler] = useState(false);
 
-  // * Create A Post in current Syndicate
-  async function createTextPost(
-    _description,
-    _title,
-    _hasImage,
-    _imageHash,
-    _isSpoiler,
-    _syndicateId
-  ) {
-    // * Get Signer
-    const signer = new ethers.providers.Web3Provider(
-      window.ethereum
-    ).getSigner();
-    // * Create Contract Instance
-    const signContract = new ethers.Contract(ContractAddress, ABI, signer);
-
-    // * Create Post
-    const newTextPost = await signContract.uploadTextContent(
-      _description,
-      _title,
-      _hasImage,
-      _imageHash,
-      _isSpoiler,
-      _syndicateId
-    );
-
-    // * wait for transaction to get mined
-    await newTextPost.wait();
-    console.log("New Post Created");
-  }
-
-  const createPostButton = async () => {
-    var imageCid = "";
-    var hasImage = false;
-
-    if (simpleFile) {
-      imageCid = await imageUploadPost();
-      hasImage = true;
-    }
-
-    await createTextPost(
-      description,
-      title,
-      hasImage,
-      imageCid,
-      spoiler,
-      syndicateId.id
-    );
-  };
-
-  // * Image Upload function for the Syndicate
-  const [simpleFile, setSimpleFile] = useState(null);
-  const [inputRefSimple, setInputRefSimple] = useState(null);
-
-  // * Uplaod to Lighthouse
-  const progressCallback = (progressData) => {
-    let percentageDone =
-      100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
-    console.log(percentageDone);
-  };
-
-  // * Upload Image
-  const imageUploadPost = async () => {
-    // * Upload File to lighthouse
-    const output = await lighthouse.upload(simpleFile, API, progressCallback);
-    // * Get Cid of the file
-    const imageCid = output.data.Hash;
-    return imageCid;
-  };
-
-  // * Handlers for File Upload
-  const handleSimpleFile = (e) => {
-    setSimpleFile(e);
-  };
-  const handleImageClick = () => {
-    inputRefSimple.click();
-  };
 
   // * Get all the Posts of the Syncdicate
   const [allSyndicatePosts, setAllSyndicatesPosts] = useState("");
+  const [createPost, setCreatePost] = useState("");
   // * Remove Duplicate objects from an array
   function removeDuplicateObjects(array) {
     const seen = new Set();
@@ -250,6 +243,7 @@ function Syndicate() {
       }
     }
     PostsInSyndicate.reverse();
+    // setCreatePost(PostsInSyndicate.returnValues.syndicateId)
     setAllSyndicatesPosts(PostsInSyndicate);
     console.log("Posts :");
     console.log(PostsInSyndicate);
@@ -259,12 +253,15 @@ function Syndicate() {
   // * UseEffect for the Whole Statee
   useEffect(() => {
     async function main() {
+     
       const syndicateData = await getSyndicate();
       // console.log(syndicateData)
-
-      const isOwner = await getOwner(syndicateData.NftContract);
+      const isOwner = await getOwner(syndicateData);
+      const isMember = await getMember(syndicateData);
+      const isJoined = await getUserJoined(syndicateData.syndicateCount)
 
       const SyndicatePosts = await getSyndicatePosts();
+    
       // console.log(isOwner)
     }
     main();
@@ -274,14 +271,30 @@ function Syndicate() {
     <>
       {syndicate && allSyndicatePosts && (
         <div className="community">
-          
           <div className="title">
+            <button className="create-post-btn">
+              <Link
+                to={`/CreatePost/${syndicateId.id}`}
+                style={{ textDecoration: "none" }}
+                state={{
+                 syndicateId: syndicateId.id,
+                }}
+              >
+                Create Post
+              </Link>
+            </button>
 
             <img className="title-img" src={person1} />
             <h1 className="title-heading">{syndicate.syndicateName}</h1>
             <div className="huddle">
               <img className="huddle-icon" src={Huddle} />
-              <Link to="/Huddle">
+              <Link
+                to={"/Huddle/${syndicateId.id}"}
+                style={{ textDecoration: "none" }}
+                state={{
+                  id: syndicateId.id,
+                }}
+              >
                 <h2 className="sidebar-livepeer">Join Shadow Room</h2>
               </Link>
               {/* <button className="joined-status">
@@ -296,36 +309,46 @@ function Syndicate() {
               margin: "15px 50px",
             }}
           />
-          {isOwnerNFT && (
-            <>
-              <div> Syndicate Owner </div>
-              <input
-                type="text"
-                placeholder="Member Address"
-                value={memberAddress}
-                onChange={(e) => setMemberAddress(e.target.value)}
-                required
-              />
-
-              <a onClick={addMember}>Add to Syndicate</a>
-            </>
-          )}
-          <div>Balance of NFT : {userBalance}</div>
 
           <div className="about">
-
             <div className="about-input">
-            <label>
-              Lorem Epsum:
-              <input className="input-field" type="text" name="name" />
-            </label>
-            {/* <input className="joined-status" type="submit" value="Submit" /> */}
-            <button className="joined-status">
-              Joined
-            </button>
+              {isOwnerNFT && (
+                <label>
+                  Add Member:
+                  <input
+                    className="input-field"
+                    type="text"
+                    placeholder="Address"
+                    value={memberAddress}
+                    onChange={(e) => setMemberAddress(e.target.value)}
+                    required
+                  />
+                  <button className="joined-status">
+                    <a onClick={addMember}>Add User</a>
+                  </button>
+                </label>
+              )}
             </div>
-            
-            <h2 className="about-title">{syndicate.syndicateDescription}</h2>
+
+            {isMember && isOwnerNFT && isUserJoined && (
+              <button className="joined-status">Creator</button>
+            )}
+
+            {isMember && !isOwnerNFT && isUserJoined && (
+              <button className="joined-status">Member</button>
+            )}
+
+            {isMember && !isOwnerNFT && !isUserJoined && (
+              <button className="joined-status">
+                <a onClick={joinSyndicate}>Join</a>
+              </button>
+            )}
+
+            {!isMember && !isOwnerNFT && !isUserJoined && (
+              <button className="joined-status">Not Eligible</button>
+            )}
+
+            <h2 className="about-title">{syndicate.syndicateName}</h2>
             <hr
               style={{
                 border: "px solid rgba(32, 32, 32, 1)",
@@ -358,126 +381,43 @@ function Syndicate() {
             </h3>
           </div>
 
-          <button className="create-post-btn">
-            Create Post
-          </button>
-
-          {/* <div className="container">
-            <div className="title">Create Post</div>
-            <div className="content">
-              <form action="#">
-                <div className="user-details">
-                  <div className="input-box">
-                    <span className="details">Post Title</span>
-                    <input
-                      type="text"
-                      placeholder="Title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="input-box">
-                    <span className="details">Post Description</span>
-                    <input
-                      type="text"
-                      placeholder="Give Some Breif Description of your Post"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="choose-pic-box">
-                    <img
-                      className="file-icon"
-                      src={File}
-                      onClick={handleImageClick}
-                    />
-                    <input
-                      type="file"
-                      ref={(input) => setInputRefSimple(input)}
-                      onChange={handleSimpleFile}
-                      style={{ display: "none" }}
-                    />
-                    {!simpleFile && (
-                      <p className="box-text">Upload files (Simple Upload) </p>
-                    )}
-                    {simpleFile && (
-                      <p className="box-text">
-                        {simpleFile.target.files[0].name}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="spoiler">
-                    <label className="spoiler-contain" for="show">
-                      <input
-                        type="radio"
-                        name="spoilers"
-                        value="true"
-                        checked={spoiler === true}
-                        onChange={() => setSpoiler(true)}
-                      />
-                      Contains spoiler
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="spoilers"
-                        value="false"
-                        checked={spoiler === false}
-                        onChange={() => setSpoiler(false)}
-                      />
-                      Does Not Contain spoiler
-                    </label>
-                  </div>
-                </div>
-
-                <div className="button">
-                  <a onClick={createPostButton} className="form-button">
-                    Post
-                  </a>
-                </div>
-              </form>
-            </div>
-          </div> */}
-
           <div className="home">
             <div className="posts-community">
               {allSyndicatePosts.map((posts) => (
-                <div
-                  className="community-box"
-                  key={posts.returnValues.datePosted}
-                >
-                  <img className="community-post-pic" src={person1} />
+                <>
+                  <div
+                    className="community-box"
+                    key={posts.returnValues.datePosted}
+                  >
+                    <img className="community-post-pic" src={person1} />
 
-                  <div className="community-post-details">
-                    <h2 className="community-post-title">
-                      {posts.returnValues.memeTitle}
-                    </h2>
+                    <div className="community-post-details">
+                      <h2 className="community-post-title">
+                        {posts.returnValues.memeTitle}
+                      </h2>
 
-                    <h4 className="community-comment-time">
-                      {UnixToTimeAgo(posts.returnValues.datePosted)}
-                    </h4>
+                      <h4 className="community-comment-time">
+                        {UnixToTimeAgo(posts.returnValues.datePosted)}
+                      </h4>
 
-                    <p className="community-comment-description">
-                      {posts.returnValues.description}
-                    </p>
-                    <Link
-                      to={`/Post/${posts.returnValues.id}`}
-                      style={{ textDecoration: "none" }}
-                      state={{
-                        id: posts.returnValues.id,
-                        syndicateId: posts.returnValues.syndicateId,
-                      }}
-                    >
-                      <button className="community-details-btn">
-                        View Details
-                      </button>
-                    </Link>
+                      <p className="community-comment-description">
+                        {posts.returnValues.description}
+                      </p>
+                      <Link
+                        to={`/Post/${posts.returnValues.id}`}
+                        style={{ textDecoration: "none" }}
+                        state={{
+                          id: posts.returnValues.id,
+                          syndicateId: posts.returnValues.syndicateId,
+                        }}
+                      >
+                        <button className="community-details-btn">
+                          View Details
+                        </button>
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                </>
               ))}
             </div>
           </div>

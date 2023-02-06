@@ -168,6 +168,19 @@ function UnixToTimeAgo(props) {
   }
 }
 
+ // * Get User Data
+
+ const [userData , setUserData] = useState();
+
+ async function getUserData() {
+  const userUpvotes = await mainContract.getUserUpvotesTotal(address)
+  const userDownvotes = await mainContract.getUserDownvotesTotal(address)
+  const userpostTotal = await mainContract.getUserpostTotal(address)
+
+  const userData = {upVotes:bigToNum(userUpvotes) , downVotes:bigToNum(userDownvotes) , posts:bigToNum(userpostTotal)}
+  console.log(userData)
+  setUserData(userData)
+ }
 
     // * Main State Loader
     useEffect(() => {
@@ -175,6 +188,7 @@ function UnixToTimeAgo(props) {
       async function main() {
         await getAllSyndicates();
         await getHomePosts()
+        await getUserData()
       }
   
       main();
@@ -183,92 +197,103 @@ function UnixToTimeAgo(props) {
 
   return (
     <>
-    {isConnected &&
-    
-    <div className="home-page">
-
-
-        <div className="communities-page">
-        <div className="user-dashboard">
-          <h1 style={{ borderBottom: "3px solid gray" }} className="user-dashboard-heading">User Dashboard</h1>
-          <h1 className="user-upvotes">User Upvotes: 432</h1>
-          <h1 className="user-downvotes">User Downvotes: 32</h1>
-          <h1 className="user-posts">User Total Posts: 21</h1>
-        </div>
-
-          <div className="create-community">
-            <Link to={"/community"}>
-              <button className="create-btn">Create your own community</button>
-            </Link>
-          </div>
-          <div className="communities">
-            {Syndicate.map((item) => (
-              <div
-                key={item.returnValues.syndicateCount}
-                className="community-box"
-              >
-                <img className="community-pic" src={person1} />
-
-                <div className="community-details">
-                  <h2 className="community-name">
-                    {item.returnValues.syndicateName}
-                  </h2>
-                  <Link
-                    to={`/Syndicates/${item.returnValues.syndicateCount}`}
-                    style={{ textDecoration: "none" }}
-                    state={{
-                      id: item.returnValues.syndicateCount,
-                    }}
-                  >
-                    <button className="join-community">Join Community</button>
-                  </Link>
-                </div>
+      {isConnected && (
+        <div className="home-page">
+          <div className="communities-page">
+            {userData && (
+              <div className="user-dashboard">
+                <h1
+                  style={{ borderBottom: "3px solid gray" }}
+                  className="user-dashboard-heading"
+                >
+                  User Dashboard
+                </h1>
+                <h1 className="user-upvotes">
+                  User Upvotes: {userData.upVotes}
+                </h1>
+                <h1 className="user-downvotes">
+                  User Downvotes: {userData.downVotes}
+                </h1>
+                <h1 className="user-posts">
+                  User Total Posts: {userData.posts}
+                </h1>
               </div>
-            ))}
-          </div>
-        </div>
-        {displayPosts && (
-          <div>
-            {displayPosts.map((item) => (
-              <div className="posts-home" key={item.returnValues.id}>
-                <div className="posts-box">
-                  <img className="post-pic" src={person1} />
+            )}
 
-                  <div className="post-details">
-                    <h3 className="post-title">
-                      {item.returnValues.memeTitle}
-                    </h3>
+            <div className="create-community">
+              <Link to={"/community"}>
+                <button className="create-btn">
+                  Create your own community
+                </button>
+              </Link>
+            </div>
+            <div className="communities">
+              {Syndicate.map((item) => (
+                <div
+                  key={item.returnValues.syndicateCount}
+                  className="community-box"
+                >
+                  <img className="community-pic" src={person1} />
 
-                    <h4 className="post-time">
-                      {UnixToTimeAgo(item.returnValues.datePosted)}
-                    </h4>
-
-                    <p className="post-description">
-                      {item.returnValues.description}
-                    </p>
+                  <div className="community-details">
+                    <h2 className="community-name">
+                      {item.returnValues.syndicateName}
+                    </h2>
+                    <Link
+                      to={`/Syndicates/${item.returnValues.syndicateCount}`}
+                      style={{ textDecoration: "none" }}
+                      state={{
+                        id: item.returnValues.syndicateCount,
+                      }}
+                    >
+                      <button className="join-community">View Community</button>
+                    </Link>
                   </div>
                 </div>
-                {item.returnValues.hasImage && (
-                  <img className="post-img" src={img1} />
-                )}
-
-                <Link
-                 to={`/Post/${item.returnValues.id}`}
-                 style={{ textDecoration: "none" }}
-                 state={{
-                   id: item.returnValues.id,
-                   syndicateId: item.returnValues.syndicateId
-                 }}
-                >
-                  <button className="details-btn">View Details</button>
-                </Link>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        )}
-      </div>
-    }
-      
+          {displayPosts && (
+            <div>
+              {displayPosts.map((item) => (
+                <div className="posts-home" key={item.returnValues.id}>
+                  <div className="posts-box">
+                    <img className="post-pic" src={person1} />
+
+                    <div className="post-details">
+                      <h3 className="post-title">
+                        {item.returnValues.memeTitle}
+                      </h3>
+
+                      <h4 className="post-time">
+                        {UnixToTimeAgo(item.returnValues.datePosted)}
+                      </h4>
+
+                      <p className="post-description">
+                        {item.returnValues.description}
+                      </p>
+                    </div>
+                  </div>
+                  {item.returnValues.hasImage && (
+                    <img className="post-img" src={img1} />
+                  )}
+
+                  <Link
+                    to={`/Post/${item.returnValues.id}`}
+                    style={{ textDecoration: "none" }}
+                    state={{
+                      id: item.returnValues.id,
+                      syndicateId: item.returnValues.syndicateId,
+                    }}
+                  >
+                    <button className="details-btn">View Details</button>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };
