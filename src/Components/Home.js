@@ -186,7 +186,16 @@ function UnixToTimeAgo(props) {
     {isConnected &&
     
     <div className="home-page">
+
+
         <div className="communities-page">
+        <div className="user-dashboard">
+          <h1 style={{ borderBottom: "3px solid gray" }} className="user-dashboard-heading">User Dashboard</h1>
+          <h1 className="user-upvotes">User Upvotes: 432</h1>
+          <h1 className="user-downvotes">User Downvotes: 32</h1>
+          <h1 className="user-posts">User Total Posts: 21</h1>
+        </div>
+
           <div className="create-community">
             <Link to={"/community"}>
               <button className="create-btn">Create your own community</button>
@@ -221,7 +230,7 @@ function UnixToTimeAgo(props) {
         {displayPosts && (
           <div>
             {displayPosts.map((item) => (
-              <div className="posts" key={item.returnValues.id}>
+              <div className="posts-home" key={item.returnValues.id}>
                 <div className="posts-box">
                   <img className="post-pic" src={person1} />
 

@@ -2,8 +2,10 @@ import React, { useEffect } from "react";
 import Home from "../images/icons/home.png";
 import Messages from "../images/icons/messages.png";
 import Bell from "../images/icons/bell.png";
+import Users from "../images/icons/users.png";
 
 import Livepeer from "../images/icons/livepper.png";
+import Lighthouse from "../images/icons/lighthouse.png";
 import Shadow from "../images/shadow-512x512.png";
 import Search from "../images/icons/search.png";
 import { Navigate } from 'react-router-dom';
@@ -49,15 +51,26 @@ const Navbar = () => {
          
 
           <div className="livepeer">
-            <img className="livepeer-icon" src={Livepeer} />
+            <img className="livepeer-icon" src={Lighthouse} />
             <Link to="/light-house">
-              <h2 className="sidebar-livepeer">Livepeer</h2>
+              <h2 className="sidebar-livepeer">Lighthouse</h2>
             </Link>
           </div>
 
+          <div className="home-data">
+
+            <div className="users">
+              {/* <img className="user-icon" src={Users}/> */}
+              <h2>Total users: 256</h2>
+            </div>
+            <h2>Total posts on platform: 235</h2>
+            <h2>Total syndicates: 26</h2>
+
+          </div>
           <div className="livepeer">
             <Connect />
           </div>
+
         </div>
       </>
 

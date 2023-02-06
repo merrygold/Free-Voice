@@ -441,9 +441,9 @@ const Post = () => {
           </div>
           }
           <div>
-          {isLoading &&
+          {/* {isLoading &&
           <div>Transaction Underway....</div>
-          }
+          } */}
           </div>
         </div>
         </div>

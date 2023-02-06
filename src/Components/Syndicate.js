@@ -274,7 +274,9 @@ function Syndicate() {
     <>
       {syndicate && allSyndicatePosts && (
         <div className="community">
+          
           <div className="title">
+
             <img className="title-img" src={person1} />
             <h1 className="title-heading">{syndicate.syndicateName}</h1>
             <div className="huddle">
@@ -282,6 +284,9 @@ function Syndicate() {
               <Link to="/Huddle">
                 <h2 className="sidebar-livepeer">Join Shadow Room</h2>
               </Link>
+              {/* <button className="joined-status">
+            Joined
+          </button> */}
             </div>
           </div>
 
@@ -308,6 +313,18 @@ function Syndicate() {
           <div>Balance of NFT : {userBalance}</div>
 
           <div className="about">
+
+            <div className="about-input">
+            <label>
+              Lorem Epsum:
+              <input className="input-field" type="text" name="name" />
+            </label>
+            {/* <input className="joined-status" type="submit" value="Submit" /> */}
+            <button className="joined-status">
+              Joined
+            </button>
+            </div>
+            
             <h2 className="about-title">{syndicate.syndicateDescription}</h2>
             <hr
               style={{
@@ -341,7 +358,11 @@ function Syndicate() {
             </h3>
           </div>
 
-          <div className="container">
+          <button className="create-post-btn">
+            Create Post
+          </button>
+
+          {/* <div className="container">
             <div className="title">Create Post</div>
             <div className="content">
               <form action="#">
@@ -420,10 +441,10 @@ function Syndicate() {
                 </div>
               </form>
             </div>
-          </div>
+          </div> */}
 
           <div className="home">
-            <div className="posts">
+            <div className="posts-community">
               {allSyndicatePosts.map((posts) => (
                 <div
                   className="community-box"
