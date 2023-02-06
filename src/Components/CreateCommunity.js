@@ -18,7 +18,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(RPC));
 
 const ABI = abi;
 
-const ContractAddress = "0x9528f220eBBC5770FAAc338d5018d871708e6EDb";
+const ContractAddress = "0x88FD1e7E486DED4fFb4002417583DCB984a76AFD";
 
 const mainContract = new ethers.Contract(ContractAddress, ABI, provider);
 
