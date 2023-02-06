@@ -10,9 +10,9 @@ body {
 }
 
 .communities-page{
-    width: 18%;
+    width: 27%;
     height: 1500px;
-    margin: 0px 150px;
+    margin: 0px 48px;
     border-radius: 20px;
 
     display: flex;
@@ -53,7 +53,7 @@ body {
 }
 
 .post-title{
-    font-size: 36px;
+    font-size: 28px;
 }
 
 .post-description{
@@ -71,8 +71,9 @@ body {
 .details-btn{
     margin: 20px 20px;
     padding: 10px 10px;
-    background: rgba(0, 139, 247, 1);
-    color: white;
+    background: rgba(255, 255, 255, 1);
+
+    color: black;
     border-radius: 25px;
     font-size: 16px;
     float: inherit;
@@ -104,7 +105,7 @@ body {
 
 .comment-input{
     margin-left: 15px;
-    width: 290%;
+    width: 120%;
     font-size: 16px;
     background: transparent;
     padding: 10px 10px;
@@ -119,8 +120,8 @@ body {
 
 .comment-post{
     text-align: center;
-    margin: 0px 300px;
-    width: 10%;
+    margin: 0px 80px;
+    width: 20%;
     padding: 10px 10px;
     background: rgba(0, 139, 247, 1);
     color: white;

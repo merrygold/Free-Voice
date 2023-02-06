@@ -32,16 +32,17 @@ form {
   
   button {
     padding: 10px 20px;
-    background-color: #1DA1F2;
-    color: #fff;
+    background: rgba(255, 255, 255, 1);
+
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
   
-  button:hover {
+  /* button:hover {
     background-color: #1795E9;
-  }
+  } */
 
   body {
     display: flex;
@@ -55,9 +56,10 @@ form {
 }
 
 .create-btn{
-    background-color: rgba(0, 139, 247, 1);
+    background: rgba(255, 255, 255, 1);
+
     padding: 12px 12px;
-    color: white;
+    color: black;
     cursor: pointer;
     font-size: 18px;
     border-radius: 50px;
@@ -84,7 +86,33 @@ form {
     /* border-radius: 25px; */
     background: rgba(22, 20, 20, 1);
 
+}
 
+.user-dashboard{
+    background: rgba(27, 25, 25, 1);
+
+    border-radius: 25px;
+
+    line-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 30px 20px;
+    /* margin: 30px auto; */
+}
+
+.user-dashboard-heading{
+    color: white;
+    font-size: 30px;
+    margin: 20px 20px;
+}
+
+.user-upvotes,
+.user-downvotes,
+.user-posts{
+    color: white;
+    font-size: 18px;
 }
 
 .community-box{
@@ -110,11 +138,12 @@ form {
 .join-community{
     margin: 5px 0px;
     padding: 10px 10px;
-    color: white;
+    color: black;
 
 
     font-size: 12px;
-    background: rgba(0, 139, 247, 1);
+    background: rgba(255, 255, 255, 1);
+
 
     border: none;
     border-radius: 50px;
@@ -124,11 +153,10 @@ form {
     transition: all 0.3s ease;
 }
 
-.join-community:hover{
+/* .join-community:hover{
     transform: scale(0.99);
     transition: all 0.3s ease;
-    background: linear-gradient(90deg, #139FD6 0%, #9328D1 97.35%);
-}
+} */
 
 .community-name{
     color: white;
@@ -142,8 +170,8 @@ form {
 /* HOME */
 
 
-.posts{
-    width: 68%;
+.posts-home{
+    width: 60%;
     margin: 50px 40px;
     border-radius: 20px;
     /* margin-left: 20px; */
