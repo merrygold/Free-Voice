@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Home from "../images/icons/home.png";
 import Messages from "../images/icons/messages.png";
 import Bell from "../images/icons/bell.png";
-import Huddle from "../images/icons/huddle.png";
+
 import Livepeer from "../images/icons/livepper.png";
 import Shadow from "../images/shadow-512x512.png";
 import Search from "../images/icons/search.png";
@@ -46,12 +46,7 @@ const Navbar = () => {
             <h2 className="sidebar-icon_notification">Notification</h2>
           </div>
 
-          <div className="huddle">
-            <img className="huddle-icon" src={Huddle} />
-            <Link to="/Huddle">
-              <h2 className="sidebar-livepeer">Huddle</h2>
-            </Link>
-          </div>
+         
 
           <div className="livepeer">
             <img className="livepeer-icon" src={Livepeer} />

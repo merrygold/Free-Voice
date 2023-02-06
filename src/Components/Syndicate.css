@@ -214,3 +214,40 @@
   cursor: pointer;
   border: none;
 }
+
+
+.choose-pic-box{
+    margin: 30px 100px;
+/* margin: 0 auto; */
+
+}
+
+.choose-file{
+    /* background: rgba(0, 139, 247, 1); */
+    padding: 12px 12px;
+    font-size: 16px;
+}
+
+.file-submit{
+    margin: 20px 50px;
+    background: rgba(0, 139, 247, 1);
+    color: white;
+    font-size: 18px;
+    border-radius: 50px;
+    padding: 12px 12px;
+    border: none;
+    cursor: pointer;
+}
+
+.spoiler{
+    margin: 30px 20px;
+    padding: 12px 12px;
+}
+
+.spoiler-contain{
+    margin: 20px 20px;
+}
+
+.spoiler-contain-not{
+    margin: 20px 20px;
+}

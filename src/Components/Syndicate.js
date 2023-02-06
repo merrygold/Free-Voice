@@ -2,22 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import abi from "../lib/abi.json";
-import nftAbi from "../lib/nftAbi.json"
+import nftAbi from "../lib/nftAbi.json";
 import Web3 from "web3";
 import { ethers } from "ethers";
 import lighthouse from "@lighthouse-web3/sdk";
 import "./Syndicate.css";
 import { useAccount } from "wagmi";
-import "../Components/Syndicate.css"
-import person1 from "../images/dps/p1.jpeg"
-import File from "../images/icons/file2.png"
-import Cake from "../images/icons/cake.png"
+import "../Components/Syndicate.css";
+import person1 from "../images/dps/p1.jpeg";
+import File from "../images/icons/file2.png";
+import Cake from "../images/icons/cake.png";
+import Huddle from "../images/icons/huddle.png";
 
 function Syndicate() {
-
   // ? CONTRACT BOILERPLATE
   // ** API GOD_FATHER
-  const API = "1e8ba22b-e3c5-4335-aadd-79b5f614ce0f"
+  const API = "1e8ba22b-e3c5-4335-aadd-79b5f614ce0f";
 
   //* Create a provider using the RPC link
   const RPC = "https://api.hyperspace.node.glif.io/rpc/v1";
@@ -33,51 +33,49 @@ function Syndicate() {
   // * State Variables for NFT Contract
   const NftABI = nftAbi;
 
-// * BigNumber to JS Number
+  // * BigNumber to JS Number
   function bigToNum(_value) {
-  const bigNumber = ethers.BigNumber.from(_value);
-  return bigNumber.toNumber();
-}
+    const bigNumber = ethers.BigNumber.from(_value);
+    return bigNumber.toNumber();
+  }
   // * State Hooks for NFT Dashboard
   // * Get Current User Address
-  const {address} = useAccount()
+  const { address } = useAccount();
   const [isOwnerNFT, setIsOwnerNFT] = useState(false);
-  const [memberAddress , setMemberAddress] = useState("");
-  const [userBalance , setUserBalance] = useState(0);
-
+  const [memberAddress, setMemberAddress] = useState("");
+  const [userBalance, setUserBalance] = useState(0);
 
   // * Get isOwner
   async function getOwner(_nftAddress) {
     const nftContract = new ethers.Contract(_nftAddress, NftABI, provider);
-    const isOwner = await nftContract.owner()
+    const isOwner = await nftContract.owner();
     if (isOwner == address) {
-      setIsOwnerNFT(true)
-      const balance = await nftContract.balanceOf(address)
-      setUserBalance(bigToNum(balance))
-      return true
-    }else {
-      setIsOwnerNFT(false)
-      const balance = await nftContract.balanceOf(address)
-      setUserBalance(bigToNum(balance))
-      console.log(bigToNum(balance))
+      setIsOwnerNFT(true);
+      const balance = await nftContract.balanceOf(address);
+      setUserBalance(bigToNum(balance));
+      return true;
+    } else {
+      setIsOwnerNFT(false);
+      const balance = await nftContract.balanceOf(address);
+      setUserBalance(bigToNum(balance));
+      console.log(bigToNum(balance));
     }
- 
   }
 
-
-  async function addMember()
-  {
+  async function addMember() {
     const signer = new ethers.providers.Web3Provider(
       window.ethereum
     ).getSigner();
-    const nftContract = new ethers.Contract(syndicate.NftContract, NftABI, signer);
-    
-    const addMemberTransaction = await nftContract.safeMint(memberAddress)
-    await addMemberTransaction.wait()
-    console.log("Minted Successfully")
+    const nftContract = new ethers.Contract(
+      syndicate.NftContract,
+      NftABI,
+      signer
+    );
+
+    const addMemberTransaction = await nftContract.safeMint(memberAddress);
+    await addMemberTransaction.wait();
+    console.log("Minted Successfully");
   }
-
-
 
   // * State Hooks for Current Syndicate
   const { state: syndicateId } = useLocation();
@@ -98,7 +96,6 @@ function Syndicate() {
     const syndicate = await mainContract.syndicates(syndicateId.id);
     setSyndicate(syndicate);
     return syndicate;
-    
   }
 
   // * State Hooks for CreatePost
@@ -138,12 +135,12 @@ function Syndicate() {
   }
 
   const createPostButton = async () => {
-    var imageCid = ""
-    var hasImage = false
+    var imageCid = "";
+    var hasImage = false;
 
     if (simpleFile) {
       imageCid = await imageUploadPost();
-      hasImage = true
+      hasImage = true;
     }
 
     await createTextPost(
@@ -159,7 +156,7 @@ function Syndicate() {
   // * Image Upload function for the Syndicate
   const [simpleFile, setSimpleFile] = useState(null);
   const [inputRefSimple, setInputRefSimple] = useState(null);
-  
+
   // * Uplaod to Lighthouse
   const progressCallback = (progressData) => {
     let percentageDone =
@@ -167,14 +164,14 @@ function Syndicate() {
     console.log(percentageDone);
   };
 
-  // * Upload Image 
-  const imageUploadPost = async() =>{
+  // * Upload Image
+  const imageUploadPost = async () => {
     // * Upload File to lighthouse
     const output = await lighthouse.upload(simpleFile, API, progressCallback);
     // * Get Cid of the file
-    const imageCid = output.data.Hash
+    const imageCid = output.data.Hash;
     return imageCid;
-  }
+  };
 
   // * Handlers for File Upload
   const handleSimpleFile = (e) => {
@@ -185,46 +182,43 @@ function Syndicate() {
   };
 
   // * Get all the Posts of the Syncdicate
-  const [allSyndicatePosts , setAllSyndicatesPosts] = useState("")
+  const [allSyndicatePosts, setAllSyndicatesPosts] = useState("");
   // * Remove Duplicate objects from an array
-function removeDuplicateObjects(array) {
-  const seen = new Set();
-  return array.filter((item) => {
-    if (seen.has(item.transactionHash)) {
-      return false;
-    } else {
-      seen.add(item.transactionHash);
-      return true;
-    }
-  });
-}
-  // * Unix to time Ago
-function UnixToTimeAgo(props) {
-  const timestamp = props;
-  const now = Date.now();
-  const difference = now - timestamp * 1000;
-  
-  const second = 1000;
-  const minute = second * 60;
-  const hour = minute * 60;
-  const day = hour * 24;
-  
-  if (difference >= day) {
-    return Math.floor(difference / day) + " days ago";
-  } else if (difference >= hour) {
-    return Math.floor(difference / hour) + " hours ago";
-  } else if (difference >= minute) {
-    return Math.floor(difference / minute) + " minutes ago";
-  } else {
-    return Math.floor(difference / second) + " seconds ago";
+  function removeDuplicateObjects(array) {
+    const seen = new Set();
+    return array.filter((item) => {
+      if (seen.has(item.transactionHash)) {
+        return false;
+      } else {
+        seen.add(item.transactionHash);
+        return true;
+      }
+    });
   }
-}
+  // * Unix to time Ago
+  function UnixToTimeAgo(props) {
+    const timestamp = props;
+    const now = Date.now();
+    const difference = now - timestamp * 1000;
 
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
 
+    if (difference >= day) {
+      return Math.floor(difference / day) + " days ago";
+    } else if (difference >= hour) {
+      return Math.floor(difference / hour) + " hours ago";
+    } else if (difference >= minute) {
+      return Math.floor(difference / minute) + " minutes ago";
+    } else {
+      return Math.floor(difference / second) + " seconds ago";
+    }
+  }
 
   // * Get all the SyndicatePosts
   async function getSyndicatePosts() {
-
     // * Create Web3 Provider
     const web3 = new Web3(new Web3.providers.HttpProvider(RPC));
 
@@ -232,50 +226,45 @@ function UnixToTimeAgo(props) {
     const contract = new web3.eth.Contract(ABI, ContractAddress);
 
     // * Get All Posts
-    const syndicatesTotal = await contract.getPastEvents('PostCreated', {
+    const syndicatesTotal = await contract.getPastEvents(
+      "PostCreated",
+      {
         fromBlock: 50000,
-        toBlock: 'latest',
-    },
-    function(error, eventsArray) {
-      return eventsArray
-    }
+        toBlock: "latest",
+      },
+      function (error, eventsArray) {
+        return eventsArray;
+      }
     );
 
-    // 
-    const syndicates = removeDuplicateObjects(syndicatesTotal)
+    //
+    const syndicates = removeDuplicateObjects(syndicatesTotal);
 
-    const PostsInSyndicate = []
+    const PostsInSyndicate = [];
 
     for (let i = 0; i < syndicates.length; i++) {
-      const currentPost = syndicates[i]
+      const currentPost = syndicates[i];
 
       if (currentPost.returnValues.syndicateId == syndicateId.id) {
-        PostsInSyndicate.push(currentPost)
+        PostsInSyndicate.push(currentPost);
       }
     }
-    PostsInSyndicate.reverse()
-    setAllSyndicatesPosts(PostsInSyndicate)
-    console.log("Posts :")
-    console.log(PostsInSyndicate)
-    return PostsInSyndicate
-}
-
-
-
-
-
-
+    PostsInSyndicate.reverse();
+    setAllSyndicatesPosts(PostsInSyndicate);
+    console.log("Posts :");
+    console.log(PostsInSyndicate);
+    return PostsInSyndicate;
+  }
 
   // * UseEffect for the Whole Statee
   useEffect(() => {
     async function main() {
-      
       const syndicateData = await getSyndicate();
       // console.log(syndicateData)
 
-      const isOwner = await getOwner(syndicateData.NftContract)
+      const isOwner = await getOwner(syndicateData.NftContract);
 
-      const SyndicatePosts = await getSyndicatePosts()
+      const SyndicatePosts = await getSyndicatePosts();
       // console.log(isOwner)
     }
     main();
@@ -283,178 +272,197 @@ function UnixToTimeAgo(props) {
 
   return (
     <>
-    {syndicate && allSyndicatePosts &&
-    <div className="community">
-      <div className="title">
-        <img className="title-img" src={person1} />
-        <h1 className="title-heading">{syndicate.syndicateName}</h1>
-      </div>
-
-      <hr
-        style={{ border: "3px solid rgba(32, 32, 32, 1)", margin: "15px 50px" }}
-      />
-
-      <div className="about">
-        <h2 className="about-title">{syndicate.syndicateDescription}</h2>
-        <hr
-          style={{
-            border: "px solid rgba(32, 32, 32, 1)",
-            margin: "5px -10px",
-          }}
-        />
-
-        <h3 className="description">
-          s/{syndicate.syndicateName} {syndicate.syndicateDescription}
-        </h3>
-
-        <div className="dob">
-          <img className="cake" src={Cake} />
-          <h4 className="creation-date">
-            Created on {convertUnixToDate(bigToNum(syndicate.dateCreated))}
-          </h4>
-        </div>
-
-        <h3 className="syndicate-id">Syndicate ID: {syndicateId.id} </h3>
-
-        <h3 className="creator-address">
-          Creator's Address: {syndicate.syndicateCreator}
-        </h3>
-        <h3 className="creator-address">Nft Name: {syndicate._nftName}</h3>
-        <h3 className="creator-address">NFT Symbol: {syndicate._nftSymbol}</h3>
-        <h3 className="creator-address">
-          NFT Address: {syndicate.NftContract}
-        </h3>
-      </div>
-
-      <div className="create-post">
-        <form className="post-area">
-          <img className="post-image" src={person1} />
-          <label>
-            <input className="post" type="text" placeholder="Create Post" />
-          </label>
-          {/* <img className='file' src={File}/> */}
-        </form>
-        <button className="post-btn">Post</button>
-      </div>
-
-      <div className="home">
-        <div className="posts">
-          {allSyndicatePosts.map((posts) => (    
-            <div className="community-box" key={posts.returnValues.datePosted} >
-              <img className="community-post-pic" src={person1} />
-
-              <div className="community-post-details">
-                <h2 className="community-post-title">{posts.returnValues.memeTitle}</h2>
-
-                <h4 className="community-comment-time">{UnixToTimeAgo(posts.returnValues.datePosted)}</h4>
-
-                <p className="community-comment-description">
-                {posts.returnValues.description}
-                </p>
-                <Link
-                 to={`/Post/${posts.returnValues.id}`}
-                 style={{ textDecoration: "none" }}
-                 state={{
-                   id: posts.returnValues.id,
-                   syndicateId: posts.returnValues.syndicateId
-                 }}
-                >
-                <button className="community-details-btn">View Details</button>
-                </Link>
-              </div>
+      {syndicate && allSyndicatePosts && (
+        <div className="community">
+          <div className="title">
+            <img className="title-img" src={person1} />
+            <h1 className="title-heading">{syndicate.syndicateName}</h1>
+            <div className="huddle">
+              <img className="huddle-icon" src={Huddle} />
+              <Link to="/Huddle">
+                <h2 className="sidebar-livepeer">Join Shadow Room</h2>
+              </Link>
             </div>
-          ))}
+          </div>
+
+          <hr
+            style={{
+              border: "3px solid rgba(32, 32, 32, 1)",
+              margin: "15px 50px",
+            }}
+          />
+          {isOwnerNFT && (
+            <>
+              <div> Syndicate Owner </div>
+              <input
+                type="text"
+                placeholder="Member Address"
+                value={memberAddress}
+                onChange={(e) => setMemberAddress(e.target.value)}
+                required
+              />
+
+              <a onClick={addMember}>Add to Syndicate</a>
+            </>
+          )}
+          <div>Balance of NFT : {userBalance}</div>
+
+          <div className="about">
+            <h2 className="about-title">{syndicate.syndicateDescription}</h2>
+            <hr
+              style={{
+                border: "px solid rgba(32, 32, 32, 1)",
+                margin: "5px -10px",
+              }}
+            />
+
+            <h3 className="description">
+              s/{syndicate.syndicateName} {syndicate.syndicateDescription}
+            </h3>
+
+            <div className="dob">
+              <img className="cake" src={Cake} />
+              <h4 className="creation-date">
+                Created on {convertUnixToDate(bigToNum(syndicate.dateCreated))}
+              </h4>
+            </div>
+
+            <h3 className="syndicate-id">Syndicate ID: {syndicateId.id} </h3>
+
+            <h3 className="creator-address">
+              Creator's Address: {syndicate.syndicateCreator}
+            </h3>
+            <h3 className="creator-address">Nft Name: {syndicate._nftName}</h3>
+            <h3 className="creator-address">
+              NFT Symbol: {syndicate._nftSymbol}
+            </h3>
+            <h3 className="creator-address">
+              NFT Address: {syndicate.NftContract}
+            </h3>
+          </div>
+
+          <div className="container">
+            <div className="title">Create Post</div>
+            <div className="content">
+              <form action="#">
+                <div className="user-details">
+                  <div className="input-box">
+                    <span className="details">Post Title</span>
+                    <input
+                      type="text"
+                      placeholder="Title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="input-box">
+                    <span className="details">Post Description</span>
+                    <input
+                      type="text"
+                      placeholder="Give Some Breif Description of your Post"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="choose-pic-box">
+                    <img
+                      className="file-icon"
+                      src={File}
+                      onClick={handleImageClick}
+                    />
+                    <input
+                      type="file"
+                      ref={(input) => setInputRefSimple(input)}
+                      onChange={handleSimpleFile}
+                      style={{ display: "none" }}
+                    />
+                    {!simpleFile && (
+                      <p className="box-text">Upload files (Simple Upload) </p>
+                    )}
+                    {simpleFile && (
+                      <p className="box-text">
+                        {simpleFile.target.files[0].name}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="spoiler">
+                    <label className="spoiler-contain" for="show">
+                      <input
+                        type="radio"
+                        name="spoilers"
+                        value="true"
+                        checked={spoiler === true}
+                        onChange={() => setSpoiler(true)}
+                      />
+                      Contains spoiler
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="spoilers"
+                        value="false"
+                        checked={spoiler === false}
+                        onChange={() => setSpoiler(false)}
+                      />
+                      Does Not Contain spoiler
+                    </label>
+                  </div>
+                </div>
+
+                <div className="button">
+                  <a onClick={createPostButton} className="form-button">
+                    Post
+                  </a>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div className="home">
+            <div className="posts">
+              {allSyndicatePosts.map((posts) => (
+                <div
+                  className="community-box"
+                  key={posts.returnValues.datePosted}
+                >
+                  <img className="community-post-pic" src={person1} />
+
+                  <div className="community-post-details">
+                    <h2 className="community-post-title">
+                      {posts.returnValues.memeTitle}
+                    </h2>
+
+                    <h4 className="community-comment-time">
+                      {UnixToTimeAgo(posts.returnValues.datePosted)}
+                    </h4>
+
+                    <p className="community-comment-description">
+                      {posts.returnValues.description}
+                    </p>
+                    <Link
+                      to={`/Post/${posts.returnValues.id}`}
+                      style={{ textDecoration: "none" }}
+                      state={{
+                        id: posts.returnValues.id,
+                        syndicateId: posts.returnValues.syndicateId,
+                      }}
+                    >
+                      <button className="community-details-btn">
+                        View Details
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    }
+      )}
     </>
-
-    // <div className="coming-soon">
-    //   {isOwnerNFT &&
-    //   <>
-    //   <div> Syndicate Owner </div>
-    //   <input
-    //   type="text"
-    //   placeholder="Member Address"
-    //   value={memberAddress}
-    //   onChange={(e) => setMemberAddress(e.target.value)}
-    //   required
-    //    />
-
-    //   <a onClick={addMember}>Add to Syndicate</a>
-    // </>
-    // }
-    // <div>Balance of NFT : {userBalance}</div>
-    //   {/* <img src={src} alt="Loading Image" />; */}
-    //   <form className="form">
-    //     <div className="form-inputs">
-    //       <input
-    //         type="text"
-    //         placeholder="Description"
-    //         value={description}
-    //         onChange={(e) => setDescription(e.target.value)}
-    //         required
-    //       />
-    //       <input
-    //         type="text"
-    //         placeholder="Title"
-    //         value={title}
-    //         onChange={(e) => setTitle(e.target.value)}
-    //         required
-    //       />
-    //     </div>
-    //     <div>
-    //       <div className="text">Contain Spoiler</div>
-    //     </div>
-    //     <div className="form-radio-buttons">
-    //       <label>
-    //         <input
-    //           type="radio"
-    //           name="spoiler"
-    //           value="true"
-    //           checked={spoiler === true}
-    //           onChange={(e) => setSpoiler(e.target.value)}
-    //           required
-    //         />
-    //         True
-    //       </label>
-    //       <label>
-    //         <input
-    //           type="radio"
-    //           name="spoiler"
-    //           value="false"
-    //           checked={spoiler === false}
-    //           onChange={(e) => setSpoiler(e.target.value)}
-    //           required
-    //         />
-    //         False
-    //       </label>
-    //     </div>
-    //     <div>
-    //       <img className="file-icon" src={File} onClick={handleImageClick} />
-    //       <input
-    //         type="file"
-    //         ref={(input) => setInputRefSimple(input)}
-    //         onChange={handleSimpleFile}
-    //         style={{ display: "none" }}
-    //       />
-    //       {!simpleFile && (
-    //         <p className="box-text">Upload files (Simple Upload) </p>
-    //       )}
-    //       {simpleFile && (
-    //         <p className="box-text">{simpleFile.target.files[0].name}</p>
-    //       )}
-    //     </div>
-    //     <div>
-    //       <div className="text">Contains Image</div>
-    //     </div>
-
-    //     <a onClick={createPostButton} className="form-button">
-    //       Post
-    //     </a>
-    //   </form>
-    // </div>
   );
 }
 

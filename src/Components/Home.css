@@ -13,7 +13,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 500px;
+    width: 800px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -74,7 +74,7 @@ form {
     border-radius: 20px;
     width: 18%;
     height: 1000px;
-    margin: 150px 150px;
+    margin: 0px 150px;
     /* margin: 0px 0px; */
 
     display: flex;
@@ -143,8 +143,8 @@ form {
 
 
 .posts{
-    width: 100%;
-    margin: 40px 40px;
+    width: 68%;
+    margin: 50px 40px;
     border-radius: 20px;
     /* margin-left: 20px; */
 
@@ -152,6 +152,12 @@ form {
     background: rgba(22, 20, 20, 1);
 
 
+}
+
+.posts:hover{
+    border: 3px solid rgb(134, 134, 134);
+    border-radius: 20px;
+    transition: all 0.3s;
 }
 
 .post-details{
@@ -175,8 +181,10 @@ form {
 
 .post-img{
     display: flex;
-    margin: 10px auto;
-    width: 800px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 1000px;
     border-radius: 20px;
 }
 
@@ -187,12 +195,7 @@ form {
     border-radius: 50px;
 }
 
-.posts:hover{
-    border: 3px solid rgb(134, 134, 134);
-    /* padding: 10px; */
-    border-radius: 20px;
-    transition: all 0.3s; /* smooth transition effect */
-}
+
 
 .details-btn{
     /* margin: 20px 30px; */

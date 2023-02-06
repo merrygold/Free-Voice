@@ -50,8 +50,10 @@ color: #FFFFFF;
 }
 
 .upload{
-    display: flex;
-    margin: 0 300px;
+    display: block;
+    /* align-items: center;
+    justify-content: center; */
+    margin: 0 auto;
 }
 
 .files-upload{
@@ -83,9 +85,11 @@ color: #FFFFFF;
 }
 
 .box-text{
-    display: block;
-    margin: auto;
-    margin-top: -60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* margin: auto; */
+    margin-top: -90px;
     text-align: center;
 
     background-color: transparent;
@@ -99,15 +103,19 @@ color: #FFFFFF;
 }
 
 .file-icon{
+  margin: 20px 20px;
     width: 57px;
     height: 57px;
-    padding: 90px 20px;
-    display: block;
-    margin: 0 auto;
+    padding: 115px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: -65px auto;
+    cursor: pointer;
 }
 
 .files-upload{
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .encrypted-files-upload{
