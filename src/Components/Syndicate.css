@@ -232,15 +232,14 @@
 }
 
 .community-details-btn{
-  margin: 10px 30px;
+  margin: 20px 20px;
   padding: 10px 10px;
-  background: rgba(0, 139, 247, 1);
-  color: white;
+  background: rgba(255, 255, 255, 1);
+  color: black;
   border-radius: 25px;
   font-size: 16px;
-  float: right;
+  float: inherit;
   cursor: pointer;
-  border: none;
 }
 
 
