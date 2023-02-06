@@ -21,6 +21,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import CreateCommunity from './Components/CreateCommunity';
 import Post from './Components/Post';
 import CreatePost from './Components/CreatePost';
+import Notification from './Components/Notification';
 
 const avalancheChain = {
   id: 3141,
@@ -84,6 +85,7 @@ export default function App() {
           <Route path="/Syndicates/:id" element={<Syndicate />} />
           <Route path="/Huddle/:id" element={<Huddle />} />
           <Route path="/CreatePost/:id" element={<CreatePost />} />
+          <Route path="/Notification" element={<Notification />} />
           
           {/* <Route path="/proposal" element={<Proposal />} />
         

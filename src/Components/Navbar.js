@@ -79,7 +79,9 @@ const Navbar = () => {
 
             <div className="bell">
               <img className="bell-icon" src={Bell} />
-              <h2 className="sidebar-icon_notification">Notification</h2>
+              <Link to="/Notification">
+              <h2 className="sidebar-icon_notification notification_style">Notification</h2>
+              </Link>
             </div>
 
             <div className="livepeer">

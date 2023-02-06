@@ -5,6 +5,7 @@
   "dependencies": {
     "@huddle01/huddle01-iframe": "^0.0.8",
     "@lighthouse-web3/sdk": "^0.1.12",
+    "@pushprotocol/restapi": "^0.3.2",
     "@rainbow-me/rainbowkit": "0.8.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

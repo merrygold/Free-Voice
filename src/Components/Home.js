@@ -13,7 +13,7 @@ const Home = () => {
   const [postContent, setPostContent] = useState("");
   const [Syndicate, setSyndicate] = useState([]);
   const [Posts, setPosts] = useState("");
-  const {address , isConnected} = useAccount()
+  const { address, isConnected } = useAccount()
   // Create a provider using the RPC link
 
   // ** API GOD_FATHER
@@ -79,9 +79,9 @@ const Home = () => {
 
   // * Get all the posts of the syndicates user joined on the Home page
 
-  const[displayPosts , setDisplayPosts] = useState('')
+  const [displayPosts, setDisplayPosts] = useState('')
 
-  async function getHomePosts(){
+  async function getHomePosts() {
 
     // * Create Web3 Provider
     const web3 = new Web3(new Web3.providers.HttpProvider(RPC));
@@ -91,12 +91,12 @@ const Home = () => {
 
     //* Get All User Syndicates
     const userSyndicatesDouble = await contract.getPastEvents('EventJoinSyndicate', {
-        fromBlock: 50000,
-        toBlock: 'latest',
+      fromBlock: 50000,
+      toBlock: 'latest',
     },
-    function(error, eventsArray) {
-      return eventsArray
-    }
+      function (error, eventsArray) {
+        return eventsArray
+      }
     );
 
     // * Get Current User Joined Syndicates
@@ -104,23 +104,23 @@ const Home = () => {
     const userSyndicates = []
 
     for (let i = 0; i < userSyndicatesArray.length; i++) {
-        const currentEvent = userSyndicatesArray[i]
-        // * If Event Match User joining
-        if(currentEvent.returnValues._member == address) {
-            // * Push syndicate Id to userSyndicates
-            userSyndicates.push(currentEvent.returnValues.id)
-        }
+      const currentEvent = userSyndicatesArray[i]
+      // * If Event Match User joining
+      if (currentEvent.returnValues._member == address) {
+        // * Push syndicate Id to userSyndicates
+        userSyndicates.push(currentEvent.returnValues.id)
+      }
     }
 
     // * 2. Get All posts for User Syndicates
     // * Get all posts
     const syndicatesPostsDouble = await contract.getPastEvents('PostCreated', {
-        fromBlock: 50000,
-        toBlock: 'latest',
+      fromBlock: 50000,
+      toBlock: 'latest',
     },
-    function(error, eventsArray) {
-      return eventsArray
-    }
+      function (error, eventsArray) {
+        return eventsArray
+      }
     );
 
     const syndicatesPostsArray = removeDuplicateObjects(syndicatesPostsDouble)
@@ -129,14 +129,14 @@ const Home = () => {
 
     // * Get only User Syndicates Post
     for (let i = 0; i < syndicatesPostsArray.length; i++) {
-        const currentPost = syndicatesPostsArray[i]
-        const currentPostSyndicateId = currentPost.returnValues.syndicateId
+      const currentPost = syndicatesPostsArray[i]
+      const currentPostSyndicateId = currentPost.returnValues.syndicateId
 
-        // * If Posts User Ids is found inside UserSyndicates array
-        // * Push the post into user Home Posts
-        if(userSyndicates.includes(currentPostSyndicateId)) {
-            userHomePosts.push(currentPost)
-        }
+      // * If Posts User Ids is found inside UserSyndicates array
+      // * Push the post into user Home Posts
+      if (userSyndicates.includes(currentPostSyndicateId)) {
+        userHomePosts.push(currentPost)
+      }
     }
 
     // * return all User Home Posts
@@ -144,56 +144,93 @@ const Home = () => {
     console.log("These are the Posts")
     console.log(userHomePosts)
     return userHomePosts;
-  
-}
 
-function UnixToTimeAgo(props) {
-  const timestamp = props;
-  const now = Date.now();
-  const difference = now - timestamp * 1000;
-  
-  const second = 1000;
-  const minute = second * 60;
-  const hour = minute * 60;
-  const day = hour * 24;
-  
-  if (difference >= day) {
-    return Math.floor(difference / day) + " days ago";
-  } else if (difference >= hour) {
-    return Math.floor(difference / hour) + " hours ago";
-  } else if (difference >= minute) {
-    return Math.floor(difference / minute) + " minutes ago";
-  } else {
-    return Math.floor(difference / second) + " seconds ago";
   }
-}
 
- // * Get User Data
+  function UnixToTimeAgo(props) {
+    const timestamp = props;
+    const now = Date.now();
+    const difference = now - timestamp * 1000;
 
- const [userData , setUserData] = useState();
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
 
- async function getUserData() {
-  const userUpvotes = await mainContract.getUserUpvotesTotal(address)
-  const userDownvotes = await mainContract.getUserDownvotesTotal(address)
-  const userpostTotal = await mainContract.getUserpostTotal(address)
+    if (difference >= day) {
+      return Math.floor(difference / day) + " days ago";
+    } else if (difference >= hour) {
+      return Math.floor(difference / hour) + " hours ago";
+    } else if (difference >= minute) {
+      return Math.floor(difference / minute) + " minutes ago";
+    } else {
+      return Math.floor(difference / second) + " seconds ago";
+    }
+  }
 
-  const userData = {upVotes:bigToNum(userUpvotes) , downVotes:bigToNum(userDownvotes) , posts:bigToNum(userpostTotal)}
-  console.log(userData)
-  setUserData(userData)
- }
+  // * Get User Data
 
-    // * Main State Loader
-    useEffect(() => {
-      if(isConnected) {
+  const [userData, setUserData] = useState();
+
+  async function getUserData() {
+    const userUpvotes = await mainContract.getUserUpvotesTotal(address)
+    const userDownvotes = await mainContract.getUserDownvotesTotal(address)
+    const userpostTotal = await mainContract.getUserpostTotal(address)
+
+    const userData = { upVotes: bigToNum(userUpvotes), downVotes: bigToNum(userDownvotes), posts: bigToNum(userpostTotal) }
+    console.log(userData)
+    setUserData(userData)
+  }
+
+
+  //* Decrypt the Image User Posted
+
+
+
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  const fetchImage = async (_displayPosts) => {
+    try {
+      // QmZud4dG4MSSZEbLYH4ispnJzgRCRVBgLopUw2bnU7ZWQW
+      const displayPosts = _displayPosts
+      for (let i = 0; i < displayPosts.length; i++) {
+        const currentImageHash = displayPosts[i].returnValues.imageHash
+        const IPFS = `https://shadownetwork.infura-ipfs.io/ipfs/${currentImageHash}`
+        const res = await fetch(IPFS);
+        const blob = await res.blob();
+        const imgSrc = URL.createObjectURL(blob)
+        // blob:http://localhost:3000/abdce65a-945a-4789-a671-69f841f526bc
+
+        displayPosts[i].returnValues.imageUrl = imgSrc
+
+      }
+      setDisplayPosts(displayPosts)
+    } catch (error) {
+      console.log(error)
+    }
+
+
+  };
+
+  // * Main State Loader
+  useEffect(() => {
+    if (isConnected) {
       async function main() {
+
         await getAllSyndicates();
-        await getHomePosts()
+        const displayPosts = await getHomePosts()
+        setIsLoading(true)
+        await fetchImage(displayPosts)
+        setIsLoading(false)
         await getUserData()
       }
-  
+
       main();
     }
-    }, [address]);
+  }, [address]);
+
+
 
   return (
     <>
@@ -275,7 +312,10 @@ function UnixToTimeAgo(props) {
                     </div>
                   </div>
                   {item.returnValues.hasImage && (
-                    <img className="post-img" src={img1} />
+                    isLoading ?
+                      <div>Image is Loading</div>
+                      :
+                      <img className="post-img" src={item.returnValues.imageUrl} alt="loading image from IPFS" />
                   )}
 
                   <Link

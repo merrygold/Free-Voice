@@ -161,6 +161,12 @@ Link {
     
 }
 
+.notification_style {
+    text-decoration: none !important;
+    color: white;
+    /* font-size: 20px; */
+}
+
 .home-data{
     background: rgb(255, 255, 255);
     padding: 20px 20px;
