@@ -46,8 +46,6 @@ function Syndicate() {
   const [isMember, setIsMember] = useState(false);
   const [isUserJoined, setIsUserJoined] = useState(false);
 
-
-  
   async function joinSyndicate() {
 
     const signer = new ethers.providers.Web3Provider(
@@ -59,8 +57,6 @@ function Syndicate() {
 
   }
 
-
-  
   async function getUserJoined(currentSyndicateId) {
   
       // * Create Web3 Provider
@@ -105,11 +101,6 @@ function Syndicate() {
   
   
   }
-
-
-
-
-
 
    // * Get isMember
    async function getMember(syndicateData) {
@@ -174,8 +165,11 @@ function Syndicate() {
 
 
   // * Get all the Posts of the Syncdicate
-  const [allSyndicatePosts, setAllSyndicatesPosts] = useState("");
+  const [allSyndicatePosts, setAllSyndicatePosts] = useState("");
   const [createPost, setCreatePost] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false)
+
   // * Remove Duplicate objects from an array
   function removeDuplicateObjects(array) {
     const seen = new Set();
@@ -244,11 +238,34 @@ function Syndicate() {
     }
     PostsInSyndicate.reverse();
     // setCreatePost(PostsInSyndicate.returnValues.syndicateId)
-    setAllSyndicatesPosts(PostsInSyndicate);
+    setAllSyndicatePosts(PostsInSyndicate);
     console.log("Posts :");
     console.log(PostsInSyndicate);
     return PostsInSyndicate;
   }
+
+  const fetchImage = async (_displayPosts) => {
+    try {
+      // QmZud4dG4MSSZEbLYH4ispnJzgRCRVBgLopUw2bnU7ZWQW
+      const displayPosts = _displayPosts
+      for (let i = 0; i < displayPosts.length; i++) {
+        const currentImageHash = displayPosts[i].returnValues.imageHash
+        const IPFS = `https://shadownetwork.infura-ipfs.io/ipfs/${currentImageHash}`
+        const res = await fetch(IPFS);
+        const blob = await res.blob();
+        const imgSrc = URL.createObjectURL(blob)
+        // blob:http://localhost:3000/abdce65a-945a-4789-a671-69f841f526bc
+
+        displayPosts[i].returnValues.imageUrl = imgSrc
+
+      }
+      setAllSyndicatePosts(displayPosts)
+    } catch (error) {
+      console.log(error)
+    }
+
+
+  };
 
   // * UseEffect for the Whole Statee
   useEffect(() => {
@@ -261,6 +278,9 @@ function Syndicate() {
       const isJoined = await getUserJoined(syndicateData.syndicateCount)
 
       const SyndicatePosts = await getSyndicatePosts();
+      setIsLoading(true)
+      await fetchImage(SyndicatePosts)
+      setIsLoading(false)
     
       // console.log(isOwner)
     }
@@ -286,21 +306,25 @@ function Syndicate() {
 
             <img className="title-img" src={person1} />
             <h1 className="title-heading">{syndicate.syndicateName}</h1>
+            {(isMember || isOwnerNFT || isUserJoined) &&
+            
             <div className="huddle">
-              <img className="huddle-icon" src={Huddle} />
-              <Link
-                to={"/Huddle/${syndicateId.id}"}
-                style={{ textDecoration: "none" }}
-                state={{
-                  id: syndicateId.id,
-                }}
-              >
-                <h2 className="sidebar-livepeer">Join Shadow Room</h2>
-              </Link>
-              {/* <button className="joined-status">
-            Joined
-          </button> */}
-            </div>
+            <img className="huddle-icon" src={Huddle} />
+            <Link
+              to={"/Huddle/${syndicateId.id}"}
+              style={{ textDecoration: "none" }}
+              state={{
+                id: syndicateId.id,
+              }}
+            >
+              <h2 className="sidebar-livepeer">Join Shadow Room</h2>
+            </Link>
+            {/* <button className="joined-status">
+          Joined
+        </button> */}
+          </div>
+            }
+         
           </div>
 
           <hr
@@ -403,6 +427,14 @@ function Syndicate() {
                       <p className="community-comment-description">
                         {posts.returnValues.description}
                       </p>
+
+                      {posts.returnValues.hasImage && (
+                    isLoading ?
+                      <div>Image is Loading</div>
+                      :
+                      <img className="post-img" src={posts.returnValues.imageUrl} alt="loading image from IPFS" />
+                  )}
+
                       <Link
                         to={`/Post/${posts.returnValues.id}`}
                         style={{ textDecoration: "none" }}
