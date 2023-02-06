@@ -71,6 +71,9 @@ const wagmiClient = createClient({
 export default function App() {
   const {isConnected} = useAccount()
   return (
+
+
+    <div className='fatherDiv'>
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
         {isConnected ? 
@@ -97,6 +100,7 @@ export default function App() {
         </> : <LoginPage/>  }
       </RainbowKitProvider>
     </WagmiConfig>
+    </div>
   );
 }
 

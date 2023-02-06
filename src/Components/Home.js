@@ -4,6 +4,7 @@ import "../Components/Home.css";
 import abi from "../lib/abi.json";
 import Web3 from "web3";
 import person1 from "../images/thumbnails/c1.png"
+import comm1 from "../images/icons/comm1.png"
 import img1 from "../images/thumbnails/nft.jpg"
 
 import { Link } from "react-router-dom";
@@ -270,7 +271,7 @@ const Home = () => {
                   key={item.returnValues.syndicateCount}
                   className="community-box"
                 >
-                  <img className="community-pic" src={person1} />
+                  <img className="community-pic" src={comm1} />
 
                   <div className="community-details">
                     <h2 className="community-name">
@@ -293,7 +294,7 @@ const Home = () => {
           {displayPosts && (
             <div>
               {displayPosts.map((item) => (
-                <div className="posts-home" key={item.returnValues.id}>
+                <div className="posts-home divPostsss" key={item.returnValues.id}>
                   <div className="posts-box">
                     <img className="post-pic" src={person1} />
 

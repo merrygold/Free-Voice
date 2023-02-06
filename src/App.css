@@ -8,6 +8,17 @@
   align-content: center;
 }
 
+.fatherDiv {
+  /* background-image: url("./images/icons/1810001.jpg") !important ; */
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.434);
+  background-size: 100% auto;
+  
+}
+
+.App {
+  /* height: 100vh; */
+}
 
 a {
   text-decoration: none;

@@ -67,6 +67,7 @@ form {
 
 
 .home-page{
+    
     display: flex;
     /* margin: 0 auto; */
     flex-direction: row;
@@ -132,8 +133,6 @@ form {
     border-radius: 50px;
 }
 
-.community-details{
-}
 
 .join-community{
     margin: 5px 0px;
@@ -198,9 +197,9 @@ form {
 
 }
 
-.post-time{
+.divPostsss {
+    background-color: rgba(205, 204, 204, 0.637);
 }
-
 .post-description{
     font-size: 18px;
     margin: 20px -90px;
